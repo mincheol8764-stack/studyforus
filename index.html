@@ -210,10 +210,20 @@
             display: none; /* 평소에는 숨김 */
         }
 
-        @media (max-width: 768px) {
-            body { overflow-y: auto; height: auto; }
-            .container { grid-template-columns: 1fr; height: auto; }
-            .bottom-section { grid-template-columns: 1fr; height: auto; }
+        /* Mobile View */
+        .container.mobile-view {
+            grid-template-columns: 1fr;
+            height: auto;
+            overflow-y: auto;
+        }
+        .container.mobile-view .bottom-section {
+            grid-template-columns: 1fr;
+            height: auto;
+        }
+
+        body.mobile-view {
+            overflow-y: auto;
+            height: auto;
         }
     </style>
 </head>
@@ -230,6 +240,7 @@
             <span id="score-text" style="font-size: 0.8rem; color: var(--text-sub); font-weight: bold; float: right;">0 / 50 XP</span>
             <div class="progress-bg"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
+        <button id="mode-toggle" class="nav-btn">📱 모바일</button>
     </div>
 
     <div class="card main-panel">
@@ -409,6 +420,7 @@
     let lastDate = localStorage.getItem('eng_lastDate') || "";
     let currentData = sentences[0];
     let selectedVoice = localStorage.getItem('eng_voice') || 'Google US English';
+    let mode = localStorage.getItem('eng_mode') || 'desktop';
 
     const levels = ["🌱 영어모험가 지호", "🐥 대단한 영어병아리", "🐰 영리한 영어토끼", "🦊 지혜로운 영어여우", "🦄 신비한 유니콘", "🦁 용감한 영어사자", "💎 영어보석 지호", "👑 영어의 왕자", "🧙 영어 대마법사", "🐉 전설의 드래곤"];
 
@@ -624,13 +636,43 @@
         });
     }
 
+    function toggleMode() {
+        const container = document.querySelector('.container');
+        const body = document.querySelector('body');
+        const toggleBtn = document.getElementById('mode-toggle');
+        
+        if (mode === 'desktop') {
+            mode = 'mobile';
+            container.classList.add('mobile-view');
+            body.classList.add('mobile-view');
+            toggleBtn.textContent = '🖥️ 데스크탑';
+        } else {
+            mode = 'desktop';
+            container.classList.remove('mobile-view');
+            body.classList.remove('mobile-view');
+            toggleBtn.textContent = '📱 모바일';
+        }
+        localStorage.setItem('eng_mode', mode);
+    }
+
     window.onload = () => { 
         updateUI(); 
         updateProgress(); 
         checkStreak(); 
-        // 목소리 목록이 로드되면 populateVoiceList 함수를 호출합니다.
+        
         if (speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+
+        const toggleBtn = document.getElementById('mode-toggle');
+        toggleBtn.addEventListener('click', toggleMode);
+
+        if(mode === 'mobile') {
+            document.querySelector('.container').classList.add('mobile-view');
+            document.querySelector('body').classList.add('mobile-view');
+            toggleBtn.textContent = '🖥️ 데스크탑';
+        } else {
+            toggleBtn.textContent = '📱 모바일';
         }
     };
 
@@ -643,6 +685,7 @@
             localStorage.removeItem('eng_ever_completed');
             localStorage.removeItem('eng_last_learn_date');
             localStorage.removeItem('eng_voice');
+            localStorage.removeItem('eng_mode');
             location.reload();
         }
     }
