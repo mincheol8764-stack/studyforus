@@ -60,7 +60,11 @@
         }
 
         .status-bar, .bottom-section { grid-column: 1 / -1; }
-        .main-panel { gap: 10px; grid-row: 2;}
+        .main-panel { 
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+        }
         .side-panel { gap: 10px; justify-content: flex-start; grid-row: 2; overflow-y: auto;}
         .bottom-section { grid-row: 3; display: grid; grid-template-columns: 1fr; gap: 15px; }
 
