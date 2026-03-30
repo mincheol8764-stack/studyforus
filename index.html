@@ -116,10 +116,11 @@
             font-family: 'NanumSquareNeo', sans-serif; 
         }
 
-        .audio-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
-        .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; }
+        .audio-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; }
+        .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; }
         .audio-btn:hover { background: var(--primary-color); color: white; }
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
+        .audio-btn.slow:hover { background: var(--highlight); color: white; }
 
         .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: auto; box-shadow: 0 4px 0 #009174; }
 
@@ -243,7 +244,8 @@
 
         <div class="audio-controls">
             <button class="audio-btn" onclick="playAudio(0.9)">🔊 유창하게</button>
-            <button class="audio-btn slow" onclick="playAudio(0.5)">👶 천천히</button>
+            <button class="audio-btn slow" onclick="playAudio(0.6)">🐌 조금 느리게</button>
+            <button class="audio-btn slow" onclick="playAudio(0.3)">🐢 아주 느리게</button>
         </div>
         
         <div style="text-align: center; color:var(--text-sub); font-size:0.8rem; margin-bottom:5px;">
