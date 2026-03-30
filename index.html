@@ -4,26 +4,597 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>매일매일 영어 한 문장</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* 1. 나눔스퀘어 네오 폰트 불러오기 */
+        @import url('https://cdn.jsdelivr.net/gh/sun-typeface/NanumSquareNeo@master/nanumsquareneo.css');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+        :root {
+            --primary-color: #6C5CE7;
+            --secondary-color: #A29BFE;
+            --bg-color: #F0F3F5;
+            --card-bg: #FFFFFF;
+            --text-main: #2D3436;
+            --text-sub: #636E72;
+            --highlight: #FD79A8;
+            --success: #00B894;
+        }
+
+        body {
+            /* 2. 기본 폰트 설정 (한글은 나눔스퀘어 네오 적용) */
+            font-family: 'Nunito', 'NanumSquareNeo', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 10px;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            height: 95vh;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-rows: auto auto 1fr;
+            gap: 12px;
+            align-content: start;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        /* 상태바 */
+        .status-bar {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .level-zone { flex-grow: 1; margin: 0 20px; }
+        .progress-bg { background: #eee; border-radius: 10px; height: 10px; width: 100%; }
+        .progress-fill { background: linear-gradient(90deg, #6C5CE7, #A29BFE); height: 100%; border-radius: 10px; width: 0%; transition: width 0.5s; }
+        .level-tag { font-weight: bold; color: var(--primary-color); font-size: 0.85rem; margin-bottom: 3px; display: block; }
+
+        /* 메인 패널 */
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-nav { display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 3. 버튼 폰트 변경 */
+        .nav-btn { 
+            background: var(--secondary-color); 
+            border: none; 
+            color: white; 
+            padding: 4px 12px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            font-family: 'NanumSquareNeo', sans-serif; 
+        }
+        
+        .day-counter { font-size: 1rem; font-weight: bold; color: var(--primary-color); }
+
+        .sentence-display {
+            font-size: 1.7rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 10px 0;
+            line-height: 1.3;
+        }
+
+        .clickable-word { cursor: pointer; padding: 2px 4px; border-radius: 4px; display: inline-block; transition: 0.2s; }
+        .clickable-word:hover { background-color: #dfe6e9; color: var(--primary-color); transform: scale(1.05); }
+
+        /* 4. 문장 해석 부분 폰트 변경 */
+        .sentence-meaning { 
+            text-align: center; 
+            color: #b2bec3; 
+            font-size: 1.1rem; 
+            margin-bottom: 5px; 
+            font-family: 'NanumSquareNeo', sans-serif; 
+        }
+
+        .audio-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
+        .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; }
+        .audio-btn:hover { background: var(--primary-color); color: white; }
+        .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
+
+        .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: auto; box-shadow: 0 4px 0 #009174; }
+
+        /* 사이드 패널 */
+        .side-panel { display: flex; flex-direction: column; gap: 10px; }
+        .sub-card { background: #F8F9FA; border-radius: 12px; padding: 12px; border-left: 4px solid var(--secondary-color); margin-bottom: 8px; }
+        .sub-card h3 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--text-sub); }
+        .sub-en { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
+        
+        /* 5. 사이드바 한글 부분 폰트 변경 */
+        .sub-kr { 
+            font-size: 0.85rem; 
+            color: #b2bec3; 
+            font-family: 'NanumSquareNeo', sans-serif; 
+        }
+        
+        .mini-speaker { float: right; cursor: pointer; font-size: 1.1rem; background: none; border: none; }
+
+        /* 하단 영역 */
+        .bottom-section {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            height: 220px;
+        }
+
+        /* 6. 연습박스 제목 폰트 변경 */
+        .practice-box h3 {
+            margin: 0 0 5px 0; 
+            color: var(--text-sub); 
+            font-family: 'NanumSquareNeo', sans-serif; 
+            font-size: 1rem;
+        }
+
+        .practice-box, .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .mic-btn { font-size: 1.5rem; background: var(--highlight); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; margin-bottom: 5px; }
+        .input-display { width: 90%; padding: 8px; border: 2px solid #dfe6e9; border-radius: 8px; font-size: 1rem; text-align: center; }
+
+        /* 7. 피드백 메시지 폰트 변경 */
+        .feedback-msg { 
+            font-size: 0.9rem; 
+            margin-top: 5px; 
+            font-family: 'NanumSquareNeo', sans-serif; 
+        }
+
+        .history-box { overflow-y: auto; }
+        .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.85rem; }
+        .history-text { font-weight: bold; }
+        .del-btn { background: #ff7675; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
+
+        /* 칭찬 배너 */
+        #praise-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; z-index: 1000; transition: 0.5s; border: 4px solid var(--primary-color); pointer-events: auto; }
+        #praise-banner.show { transform: translate(-50%, -50%) scale(1); }
+        .thumbs-up { font-size: 4rem; display: block; }
+        
+        /* 8. 칭찬 텍스트 폰트 변경 */
+        .praise-text { 
+            font-family: 'NanumSquareNeo', sans-serif; 
+            margin-bottom: 20px; 
+        }
+
+        @media (max-width: 768px) {
+            body { overflow-y: auto; height: auto; }
+            .container { grid-template-columns: 1fr; height: auto; }
+            .bottom-section { grid-template-columns: 1fr; height: auto; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>매일매일 영어 한 문장</h1>
-
-        <div class="sentence-card">
-            <div id="sentence" class="sentence"></div>
-            <div id="meaning" class="meaning"></div>
+<div class="container">
+    <div class="status-bar">
+        <div class="streak-zone" onclick="showStreakHistory()">
+            <span id="streak-fire">🔥</span> <span id="streak-count" style="font-weight: bold; font-size: 0.9rem;">0일째</span>
+            <button class="nav-btn" style="padding:2px 5px; font-size:10px; margin-left:5px;">기록</button>
         </div>
-
-        <div class="controls">
-            <button id="prev-btn">◀ 이전</button>
-            <button id="play-btn">🔊 듣기</button>
-            <button id="next-btn">다음 ▶</button>
+        <div class="level-zone">
+            <span class="level-tag" id="level-name" onclick="showLevelInfo()" style="cursor:pointer;">🌱 초보 모험가 (Lv.1) ⓘ</span>
+            <span id="score-text" style="font-size: 0.8rem; color: var(--text-sub); font-weight: bold; float: right;">0 / 200 XP</span>
+            <div class="progress-bg"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
     </div>
 
-    <script src="main.js"></script>
+    <div class="card main-panel">
+        <div class="header-nav">
+            <button class="nav-btn" onclick="prevSentence()">◀ 이전</button>
+            <span class="day-counter">Lesson <span id="current-idx">1</span> / <span id="total-count">0</span></span>
+            <button class="nav-btn" onclick="nextSentence()">다음 ▶</button>
+        </div>
+
+        <div class="sentence-display" id="main-sentence"></div>
+        <div class="sentence-meaning" id="main-meaning"></div>
+
+        <div class="audio-controls">
+            <button class="audio-btn" onclick="playAudio(0.9)">🔊 유창하게</button>
+            <button class="audio-btn slow" onclick="playAudio(0.5)">👶 천천히</button>
+        </div>
+        
+        <div style="text-align: center; color:var(--text-sub); font-size:0.8rem; margin-bottom:5px;">
+            * 단어를 클릭하면 개별 발음을 들려드려요!
+        </div>
+
+        <button class="complete-btn" onclick="completeLearning()">🎉 오늘의 학습 완료!</button>
+    </div>
+
+    <div class="side-panel">
+        <div class="card" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+            <div class="sub-card" style="border-left-color: #fab1a0;">
+                <button class="mini-speaker" onclick="playText(currentData.q_en)">🔊</button>
+                <h3>💬 실전 대화 (Q&A)</h3>
+                <div class="sub-en" id="qa-en"></div>
+                <div class="sub-kr" id="qa-kr"></div>
+            </div>
+
+            <div class="sub-card" style="border-left-color: #74b9ff;">
+                <button class="mini-speaker" onclick="playText(currentData.ex_en)">🔊</button>
+                <h3>✨ 응용 문장</h3>
+                <div class="sub-en" id="ex-en"></div>
+                <div class="sub-kr" id="ex-kr"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-section">
+        <div class="practice-box">
+            <h3 style="margin:0 0 5px 0; color:var(--text-sub); font-family:'Gaegu'; font-size: 1rem;">🎤 문장 말하기 연습</h3>
+            <button class="mic-btn" id="mic-btn" onclick="startListening()">🎤</button>
+            <input type="text" id="user-input" class="input-display" placeholder="마이크를 클릭하세요" readonly>
+            <div class="feedback-msg" id="feedback-msg" style="font-size: 0.9rem; margin-top:5px; font-family:'Gaegu'"></div>
+        </div>
+
+        <div class="history-box">
+         <h3 style="margin:0; position:sticky; top:0; background:white; padding-bottom:5px; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between;">
+           <span>📅 학습 기록</span>
+           <button onclick="resetData()" style="font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px;">점수 지우기</button>
+         </h3>
+         <div id="history-list"></div>
+        </div>
+    </div>
+</div>
+
+<div id="praise-banner">
+    <span class="thumbs-up">👍</span>
+    <div class="praise-text" style="font-family:'Gaegu'; margin-bottom: 20px;"></div>
+    <button onclick="closePraise()" style="background: var(--primary-color); color: white; border: none; padding: 10px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 0 #4b3eb1;">
+        확인했어요!
+    </button>
+</div>
+
+<script>
+    // [데이터 및 스크립트 로직 유지 - 이전과 동일]
+    const sentences = [
+        { main: "I can read the book.", mean: "나는 책을 읽을 수 있어요.", q_en: "Can you read?", q_kr: "너 읽을 수 있니?", ex_en: "I can read the map.", ex_kr: "나는 지도를 읽을 수 있어." },
+        { main: "I can see the flower.", mean: "나는 꽃을 볼 수 있어요.", q_en: "What do you see?", q_kr: "뭐가 보여?", ex_en: "I can see the cat.", ex_kr: "나는 고양이를 볼 수 있어." },
+{ main: "I can swim in the sea.", mean: "나는 물속에서 수영할 수 있어요.", q_en: "Where can you swim?", q_kr: "어디서 수영할 수 있어?", ex_en: "I can swim in the pool.", ex_kr: "나는 수영장에서 수영할 수 있어." },
+{ main: "I can sing a song.", mean: "나는 노래를 부를 수 있어요.", q_en: "Can you sing?", q_kr: "너 노래할 수 있니?", ex_en: "I can sing a pop song.", ex_kr: "나는 팝송을 부를 수 있어." },
+{ main: "I can do anything.", mean: "나는 무엇이든 할 수 있어요.", q_en: "Are you ready?", q_kr: "준비됐니?", ex_en: "I can do my homework.", ex_kr: "나는 내 숙제를 할 수 있어." },
+{ main: "You are my friend.", mean: "너는 나의 친구야.", q_en: "Who am I to you?", q_kr: "난 너한테 누구야?", ex_en: "You are my teacher.", ex_kr: "당신은 나의 선생님이에요." },
+{ main: "You are so beautiful.", mean: "너는 너무 예뻐.", q_en: "Do I look okay?", q_kr: "나 괜찮아 보여?", ex_en: "You are so tall.", ex_kr: "너는 키가 정말 크구나." },
+{ main: "You are good at game.", mean: "너는 게임을 잘 하는구나.", q_en: "Am I good?", q_kr: "나 잘해?", ex_en: "You are good at soccer.", ex_kr: "너는 축구를 잘 하는구나." },
+{ main: "You are very kind.", mean: "너는 참 착하구나.", q_en: "Can I help you?", q_kr: "내가 도와줄까?", ex_en: "You are very smart.", ex_kr: "너는 참 똑똑하구나." },
+{ main: "You are the best!", mean: "너는 최고야!", q_en: "Did I win?", q_kr: "내가 이겼어?", ex_en: "You are the winner!", ex_kr: "네가 승자야!" },
+{ main: "I like swimming.", mean: "나는 수영을 좋아해요.", q_en: "What is your hobby?", q_kr: "취미가 뭐야?", ex_en: "I like skating.", ex_kr: "나는 스케이트 타는 걸 좋아해." },
+{ main: "She likes writing.", mean: "그녀는 쓰는 것을 좋아해요.", q_en: "Does she like books?", q_kr: "그녀는 책을 좋아해?", ex_en: "She likes painting.", ex_kr: "그녀는 그림 그리는 걸 좋아해." },
+{ main: "He likes driving.", mean: "그는 운전하는 것을 좋아해요.", q_en: "Does he have a car?", q_kr: "그는 차가 있어?", ex_en: "He likes fishing.", ex_kr: "그는 낚시하는 걸 좋아해." },
+{ main: "My dog likes running.", mean: "내 개는 뛰는 것을 좋아해요.", q_en: "Is your dog active?", q_kr: "네 강아지는 활동적이니?", ex_en: "My cat likes jumping.", ex_kr: "내 고양이는 점프하는 걸 좋아해." },
+{ main: "We like studying.", mean: "우리는 공부하는 것을 좋아해요.", q_en: "Are you smart?", q_kr: "너희들 똑똑하니?", ex_en: "We like playing.", ex_kr: "우리는 노는 걸 좋아해." },
+{ main: "I want to go to zoo.", mean: "저는 동물원에 가고 싶어요.", q_en: "Where do you want to go?", q_kr: "어디 가고 싶어?", ex_en: "I want to go to the beach.", ex_kr: "나는 바다에 가고 싶어." },
+{ main: "I want to buy a toy.", mean: "저는 장난감을 사고 싶어요.", q_en: "What do you want?", q_kr: "뭐 원해?", ex_en: "I want to buy a book.", ex_kr: "나는 책을 사고 싶어." },
+{ main: "I want some water.", mean: "저는 물을 먹고 싶어요.", q_en: "Are you thirsty?", q_kr: "목마르니?", ex_en: "I want some milk.", ex_kr: "나는 우유를 좀 원해." },
+{ main: "I want to be a teacher.", mean: "저는 선생님이 되고 싶어요.", q_en: "What is your dream?", q_kr: "꿈이 뭐야?", ex_en: "I want to be a doctor.", ex_kr: "나는 의사가 되고 싶어." },
+{ main: "I want to call him.", mean: "저는 그에게 전화를 하고 싶어요.", q_en: "Do you miss him?", q_kr: "그가 그립니?", ex_en: "I want to call my mom.", ex_kr: "나는 엄마한테 전화하고 싶어." },
+{ main: "I make a cake.", mean: "나는 케이크를 만들어요.", q_en: "What are you making?", q_kr: "뭐 만들고 있어?", ex_en: "I make a sandwich.", ex_kr: "나는 샌드위치를 만들어." },
+{ main: "She makes me happy.", mean: "그 여자는 나를 행복하게 했다.", q_en: "Do you love her?", q_kr: "그녀를 사랑하니?", ex_en: "Music makes me sad.", ex_kr: "음악은 나를 슬프게 해." },
+{ main: "He makes a doll for me.", mean: "그는 나에게 인형을 만들어 주었다.", q_en: "Is it a gift?", q_kr: "그거 선물이야?", ex_en: "She makes a card for me.", ex_kr: "그녀는 나에게 카드를 만들어 주었어." },
+{ main: "We make a promise.", mean: "우리는 약속을 했어요.", q_en: "Will you keep it?", q_kr: "약속 지킬 거야?", ex_en: "We make a plan.", ex_kr: "우리는 계획을 세워." },
+{ main: "I make everything.", mean: "내가 모든 것을 만들어요.", q_en: "Are you a creator?", q_kr: "네가 다 만든 거야?", ex_en: "I make breakfast.", ex_kr: "나는 아침밥을 만들어." },
+{ main: "She is not my sister.", mean: "그녀는 나의 자매가 아니에요.", q_en: "Who is she?", q_kr: "그녀는 누구야?", ex_en: "She is not my cousin.", ex_kr: "그녀는 내 사촌이 아니야." },
+{ main: "He is not my father.", mean: "그 남자는 우리 아빠가 아니에요.", q_en: "Is he your teacher?", q_kr: "저분 네 선생님이니?", ex_en: "He is not my brother.", ex_kr: "그는 내 형제가 아니야." },
+{ main: "It is not my cat.", mean: "그것은 나의 고양이가 아니에요.", q_en: "Whose cat is it?", q_kr: "누구 고양이야?", ex_en: "It is not my dog.", ex_kr: "그건 내 강아지가 아니야." },
+{ main: "They are not my pens.", mean: "그것들은 나의 펜들이 아니에요.", q_en: "Are these yours?", q_kr: "이것들 네 거야?", ex_en: "They are not my shoes.", ex_kr: "그것들은 내 신발이 아니야." },
+{ main: "Who is my teacher?", mean: "누가 저희 선생님이죠?", q_en: "Mr. Kim is your teacher.", q_kr: "김 선생님이 네 선생님이야.", ex_en: "Who is your coach?", ex_kr: "누가 네 코치님이니?" },
+{ main: "I have a big robot.", mean: "나는 큰 로봇을 가지고 있어요.", q_en: "What do you have?", q_kr: "너 뭐 가지고 있어?", ex_en: "I have a small ball.", ex_kr: "나는 작은 공을 가지고 있어." },
+{ main: "He has a nice car.", mean: "그는 좋은 차를 가지고 있어요.", q_en: "Is his car cool?", q_kr: "그의 차 멋지니?", ex_en: "He has a fast bike.", ex_kr: "그는 빠른 자전거를 가지고 있어." },
+{ main: "She has lovely smile.", mean: "그녀는 예쁜 웃음을 가지고 있어요.", q_en: "Do you like her?", q_kr: "그녀를 좋아하니?", ex_en: "She has long hair.", ex_kr: "그녀는 긴 머리를 가지고 있어." },
+{ main: "I have to go.", mean: "나는 가야만 해요.", q_en: "Why are you leaving?", q_kr: "왜 떠나는 거야?", ex_en: "I have to sleep.", ex_kr: "나는 자야만 해." },
+{ main: "We have to study.", mean: "우리는 공부를 해야만 해요.", q_en: "What do we do now?", q_kr: "우리 이제 뭐 해?", ex_en: "We have to clean.", ex_kr: "우리는 청소해야만 해." },
+{ main: "Let's go to the theater.", mean: "우리 함께 극장 가자.", q_en: "Okay, let's go!", q_kr: "좋아, 가자!", ex_en: "Let's go to the park.", ex_kr: "공원에 가자." },
+{ main: "Let's sing together.", mean: "우리 함께 노래하자.", q_en: "Sounds fun!", q_kr: "재미있겠다!", ex_en: "Let's dance together.", ex_kr: "함께 춤추자." },
+{ main: "This question is hard.", mean: "이 질문은 어려워요.", q_en: "Can you answer?", q_kr: "답할 수 있니?", ex_en: "This game is hard.", ex_kr: "이 게임은 어려워." },
+{ main: "This chair is too hard.", mean: "이 의자는 너무 딱딱해요.", q_en: "Is it comfortable?", q_kr: "그거 편안해?", ex_en: "This bed is too soft.", ex_kr: "이 침대는 너무 폭신해." },
+{ main: "He studies hard.", mean: "그는 공부를 열심히 해요.", q_en: "Is he a good student?", q_kr: "그는 착한 학생이니?", ex_en: "He works hard.", ex_kr: "그는 열심히 일해." },
+{ main: "I saw a bear on this mountain.", mean: "나는 산에서 곰을 봤어요.", q_en: "What did you see?", q_kr: "뭐 봤어?", ex_en: "I saw a bird in the sky.", ex_kr: "나는 하늘에서 새를 봤어." },
+{ main: "My dog hates a bath.", mean: "내 개는 목욕을 싫어해요.", q_en: "Does he like water?", q_kr: "걔 물 좋아해?", ex_en: "My cat hates milk.", ex_kr: "내 고양이는 우유를 싫어해." },
+{ main: "I have a bath.", mean: "나는 목욕을 해요.", q_en: "What are you doing?", q_kr: "뭐 해?", ex_en: "I have a snack.", ex_kr: "나는 간식을 먹어." },
+{ main: "I want to live in a big city.", mean: "나는 큰 도시에서 살고 싶어요.", q_en: "Where do you want to live?", q_kr: "어디 살고 싶어?", ex_en: "I want to live in a small house.", ex_kr: "나는 작은 집에 살고 싶어." },
+{ main: "I heard the sound of music.", mean: "나는 음악 소리를 들었어.", q_en: "What did you hear?", q_kr: "무슨 소리 들었어?", ex_en: "I heard the sound of rain.", ex_kr: "나는 빗소리를 들었어." },
+{ main: "That sounds good.", mean: "그거 좋은 생각이네.", q_en: "Let's play soccer!", q_kr: "축구 하자!", ex_en: "That sounds great.", ex_kr: "그거 정말 좋네." },
+{ main: "I will go to Spain in this year.", mean: "나는 올해 안에 스페인에 갈 거야.", q_en: "Where will you go?", q_kr: "어디 갈 거야?", ex_en: "I will go to school tomorrow.", ex_kr: "나는 내일 학교에 갈 거야." },
+{ main: "She's 13 years old.", mean: "그녀는 13살이야.", q_en: "How old is she?", q_kr: "그녀는 몇 살이야?", ex_en: "He is 10 years old.", ex_kr: "그는 10살이야." },
+{ main: "The noise of the drum is too loud.", mean: "그 드럼의 소리는 너무 커.", q_en: "Is it okay?", q_kr: "소리 괜찮아?", ex_en: "The noise of the TV is too loud.", ex_kr: "TV 소리가 너무 커." },
+{ main: "Don't make noise.", mean: "소란을 피우지 마세요.", q_en: "Can I shout?", q_kr: "소리 질러도 돼요?", ex_en: "Don't make a mess.", ex_kr: "어지럽히지 마세요." },
+{ main: "Apples are round, sweet fruit.", mean: "사과는 둥글고, 달콤한 과일이다.", q_en: "What are apples?", q_kr: "사과가 뭐야?", ex_en: "Bananas are long, yellow fruit.", ex_kr: "바나나는 길고 노란 과일이야." },
+{ main: "I drink the fruit juice.", mean: "나는 과일주스를 마십니다.", q_en: "What do you drink?", q_kr: "뭐 마셔?", ex_en: "I drink the cold water.", ex_kr: "나는 찬물을 마셔." },
+{ main: "The bridge is very long.", mean: "그 다리는 매우 길어.", q_en: "Is it a long bridge?", q_kr: "그거 긴 다리야?", ex_en: "The ruler is very short.", ex_kr: "그 자는 매우 짧아." },
+{ main: "Long time no see.", mean: "오랜만입니다.", q_en: "Nice to see you again!", q_kr: "다시 만나서 반가워요!", ex_en: "Long time no talk.", ex_kr: "오랜만이야-대화한 지 오래됐을 때." },
+{ main: "Count from one to ten.", mean: "1부터 10까지 세주세요.", q_en: "Can you count?", q_kr: "숫자 셀 수 있니?", ex_en: "Count from ten to one.", ex_kr: "10부터 1까지 거꾸로 세봐." },
+{ main: "He filled a cup with water.", mean: "그 남자가 물을 잔에 가득 담았다.", q_en: "What did he do?", q_kr: "그가 뭐 했어?", ex_en: "She filled a bag with books.", ex_kr: "그녀는 가방에 책을 가득 채웠어." },
+{ main: "My family lives in Boston.", mean: "내 가족들은 보스턴에 살아요.", q_en: "Where do you live?", q_kr: "어디 살아?", ex_en: "My friend lives in Seoul.", ex_kr: "내 친구는 서울에 살아." },
+{ main: "Tomatoes are good for your body.", mean: "토마토는 너의 몸에 좋아.", q_en: "Are they healthy?", q_kr: "이거 몸에 좋아?", ex_en: "Carrots are good for your eyes.", ex_kr: "당근은 눈에 좋아." },
+{ main: "I get up early every day.", mean: "나는 매일 일찍 일어나요.", q_en: "Do you sleep late?", q_kr: "늦게 자니?", ex_en: "I get up at seven every day.", ex_kr: "나는 매일 7시에 일어나." },
+{ main: "I see flower in the early morning.", mean: "내가 아침 일찍 꽃을 보았어.", q_en: "When did you see it?", q_kr: "언제 봤어?", ex_en: "I see birds in the early morning.", ex_kr: "나는 아침 일찍 새들을 봐." },
+{ main: "Who is that guy?", mean: "저 사람은 누구야?", q_en: "He is my uncle.", q_kr: "우리 삼촌이야.", ex_en: "Who is that girl?", ex_kr: "저 여자는 누구야?" },
+{ main: "Where is your school?", mean: "너희 학교는 어디니?", q_en: "It's near here.", q_kr: "여기 근처에 있어.", ex_en: "Where is your bag?", ex_kr: "네 가방 어디 있니?" },
+{ main: "What is your favorite subject?", mean: "네가 가장 좋아하는 과목이 뭐야?", q_en: "I like Art.", q_kr: "나는 미술을 좋아해.", ex_en: "What is your favorite color?", ex_kr: "네가 좋아하는 색깔은 뭐야?" },
+{ main: "When do you go to your school?", mean: "너는 언제 학교에 가니?", q_en: "At eight o'clock.", q_kr: "8시에 가.", ex_en: "When do you sleep?", ex_kr: "너 언제 자니?" },
+{ main: "How much is this?", mean: "이거 얼마예요?", q_en: "It's one dollar.", q_kr: "1달러예요.", ex_en: "How much is the milk?", ex_kr: "우유가 얼마예요?" },
+{ main: "My brother sings very well.", mean: "내 형제는 노래를 매우 잘해.", q_en: "Is he a singer?", q_kr: "그는 가수니?", ex_en: "My sister dances very well.", ex_kr: "내 여동생은 춤을 아주 잘 춰." },
+{ main: "He looks well.", mean: "그 남자는 좋아 보이네.", q_en: "Is he okay now?", q_kr: "그 사람 이제 괜찮아?", ex_en: "She looks happy.", ex_kr: "그녀는 행복해 보여." },
+{ main: "Please call the police.", mean: "경찰을 불러주세요.", q_en: "What happened?", q_kr: "무슨 일이에요?", ex_en: "Please call my mom.", ex_kr: "우리 엄마 좀 불러주세요." },
+{ main: "Are you hungry now?", mean: "배가 고프니?", q_en: "Yes, a little.", q_kr: "네, 조금요.", ex_en: "Are you sleepy now?", ex_kr: "너 지금 졸리니?" },
+{ main: "Give me some water.", mean: "물 좀 주세요.", q_en: "Here you are.", q_kr: "여기 있어요.", ex_en: "Give me some candy.", ex_kr: "사탕 좀 주세요." },
+{ main: "I watered the flowers.", mean: "나는 꽃에 물을 주었다.", q_en: "What did you do?", q_kr: "뭐 했어?", ex_en: "I watered the tree.", ex_kr: "나는 나무에 물을 주었어." },
+{ main: "He traveled around the world.", mean: "그는 전 세계를 여행해요.", q_en: "Does he like trips?", q_kr: "그는 여행을 좋아해?", ex_en: "She traveled to Jeju island.", ex_kr: "그녀는 제주도를 여행했어." },
+{ main: "I don't know what to do.", mean: "내가 무엇을 해야 할지 모르겠어요.", q_en: "Are you bored?", q_kr: "심심하니?", ex_en: "I don't know what to eat.", ex_kr: "나는 뭘 먹어야 할지 모르겠어." },
+{ main: "I don't understand your saying.", mean: "당신의 말을 잘 이해하지 못하겠습니다.", q_en: "Do you know what I mean?", q_kr: "내 말 알겠니?", ex_en: "I don't understand this book.", ex_kr: "나는 이 책을 이해 못 하겠어." },
+{ main: "Can you help me?", mean: "도와주실 수 있으세요?", q_en: "Sure, what's wrong?", q_kr: "물론이죠, 무슨 일이에요?", ex_en: "Can you show me?", ex_kr: "나한테 보여줄 수 있니?" },
+{ main: "What’s up?", mean: "잘 지냈어? (안녕?)", q_en: "Hi! Not much.", q_kr: "안녕! 별일 없어.", ex_en: "What's new?", ex_kr: "새로운 소식 있어?" },
+{ main: "Nothing much.", mean: "별거 없었어요.", q_en: "What's up?", q_kr: "잘 지냈어?", ex_en: "Nothing special.", ex_kr: "특별한 일 없었어." },
+{ main: "Studying math right now.", mean: "당장 수학 공부를 합시다.", q_en: "What are we doing?", q_kr: "우리 뭐 하는 거야?", ex_en: "Studying English right now.", ex_kr: "지금 당장 영어 공부를 하자." },
+{ main: "Sounds boring.", mean: "지루해 보이네요.", q_en: "Do you want to study?", q_kr: "공부하고 싶어?", ex_en: "Sounds funny.", ex_kr: "웃기게 들리네 / 재미있겠다." },
+{ main: "Are you studying for your test?", mean: "시험 때문에 공부하는 거니?", q_en: "Yes, I am.", q_kr: "네, 맞아요.", ex_en: "Are you waiting for your friend?", ex_kr: "친구 기다리는 중이니?" }
+    ];
+
+    let currentIndex = 0;
+    let exp = parseInt(localStorage.getItem('eng_exp')) || 0;
+    let streak = parseInt(localStorage.getItem('eng_streak')) || 0;
+    let lastDate = localStorage.getItem('eng_lastDate') || "";
+    let currentData = sentences[0];
+
+    const levels = ["🌱 영어모험가 지호", "🐥 대단한 영어병아리", "🐰 영리한 영어토끼", "🦊 지혜로운 영어여우", "🦄 신비한 유니콘", "🦁 용감한 영어사자", "💎 영어보석 지호", "👑 영어의 왕자", "🧙 영어 대마법사", "🐉 전설의 드래곤"];
+
+const praises = [
+    { en: "Amazing, Jiho! You are a superstar!", ko: "놀라워, 지호야! 넌 정말 슈퍼스타야!" },
+    { en: "Excellent, Jiho! Keep it up!", ko: "훌륭해, 지호야! 계속 지금처럼 해보자!" },
+    { en: "You did it, Jiho! I'm so proud of you!", ko: "지호가 해냈구나! 정말 정말 자랑스러워!" },
+    { en: "Wow! Jiho, your English is getting better!", ko: "와! 지호의 영어 실력이 쑥쑥 늘고 있어!" },
+    { en: "Fantastic work today, Jiho!", ko: "오늘 정말 환상적으로 잘했어, 지호야!" },
+    { en: "Jiho, you are an English genius!", ko: "지호야, 넌 정말 영어 천재인 것 같아!" },
+    { en: "Great job, Jiho! You are so smart!", ko: "잘했어, 지호야! 정말 똑똑하구나!" },
+    { en: "Perfect, Jiho! You are the best!", ko: "완벽해, 지호야! 네가 정말 최고야!" },
+    { en: "Way to go, Jiho! See you tomorrow!", ko: "멋지다, 지호야! 내일 또 만나자!" },
+    { en: "Wonderful, Jiho! You finished it!", ko: "멋져, 지호야! 끝까지 다 해냈구나!" },
+    { en: "Thumbs up, Jiho! You are doing great!", ko: "엄지 척, 지호야! 아주 잘하고 있어!" },
+    { en: "Cool, Jiho! You are a brave adventurer!", ko: "멋져, 지호야! 넌 용감한 모험가야!" },
+    { en: "Sweet! Jiho, you are a hard worker!", ko: "최고야! 지호는 정말 노력파구나!" },
+    { en: "Incredible, Jiho! You made it!", ko: "믿기지 않아, 지호야! 결국 해냈구나!" },
+    { en: "Good for you, Jiho! Happy learning!", ko: "잘됐구나, 지호야! 즐겁게 공부하자!" }
+];
+
+    function updateProgress() {
+    // 1. 레벨별 필요 점수 설정 (사용자 요청 반영)
+    function getTargetPoints(lv) {
+        if (lv <= 4) return 50;      // 1~4단계: 50점
+        if (lv <= 7) return 80;      // 5~7단계: 80점
+        if (lv <= 9) return 100;     // 8~9단계: 100점
+        return 200;                  // 마지막 10단계: 200점
+    }
+
+    let tempExp = exp;
+    let lvIndex = 0;
+    let targetPoints = getTargetPoints(lvIndex + 1);
+
+    // 누적 점수(exp)를 이용해 현재 레벨과 현재 레벨에서의 잔여 점수 계산
+    while (lvIndex < 9 && tempExp >= getTargetPoints(lvIndex + 1)) {
+        tempExp -= getTargetPoints(lvIndex + 1);
+        lvIndex++;
+        targetPoints = getTargetPoints(lvIndex + 1);
+    }
+
+    const currentLevelExp = tempExp; // 현재 레벨에서 쌓은 점수
+    const progressPercent = Math.min((currentLevelExp / targetPoints) * 100, 100);
+    
+    // 화면 업데이트
+    document.getElementById('level-name').textContent = `${levels[lvIndex]} (Lv.${lvIndex + 1}) ⓘ`;
+    document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+    document.getElementById('score-text').textContent = `${currentLevelExp} / ${targetPoints} XP`;
+    
+    localStorage.setItem('eng_exp', exp);
+   }
+    function checkStreak() {
+        const today = new Date().toDateString();
+        if (lastDate !== today) {
+            if (lastDate !== "") {
+                const last = new Date(lastDate);
+                const diff = (new Date(today) - last) / (1000 * 60 * 60 * 24);
+                if (diff === 1) streak++;
+                else if (diff > 1) streak = 1;
+            } else { streak = 1; }
+            lastDate = today;
+            localStorage.setItem('eng_streak', streak);
+            localStorage.setItem('eng_lastDate', lastDate);
+        }
+        document.getElementById('streak-count').textContent = `${streak}일째`;
+    }
+
+    const synth = window.speechSynthesis;
+    function playText(text, rate = 1.0) {
+        if (synth.speaking) synth.cancel();
+        setTimeout(() => {
+            const utterThis = new SpeechSynthesisUtterance(text);
+            utterThis.lang = 'en-US';
+            utterThis.rate = rate;
+            const voices = synth.getVoices();
+            const voice = voices.find(v => v.name.includes('Google US English')) || voices[0];
+            if(voice) utterThis.voice = voice;
+            synth.speak(utterThis);
+        }, 100);
+    }
+
+    function updateUI() {
+        currentData = sentences[currentIndex];
+        document.getElementById('current-idx').textContent = currentIndex + 1;
+        document.getElementById('total-count').textContent = sentences.length;
+        const sentenceContainer = document.getElementById('main-sentence');
+        sentenceContainer.innerHTML = '';
+        currentData.main.split(' ').forEach(word => {
+            const span = document.createElement('span');
+            span.textContent = word + ' ';
+            span.className = 'clickable-word';
+            span.onclick = () => playText(word.replace(/[.,!?]/g, ''));
+            sentenceContainer.appendChild(span);
+        });
+        document.getElementById('main-meaning').textContent = currentData.mean;
+        document.getElementById('qa-en').textContent = currentData.q_en;
+        document.getElementById('qa-kr').textContent = currentData.q_kr;
+        document.getElementById('ex-en').textContent = currentData.ex_en;
+        document.getElementById('ex-kr').textContent = currentData.ex_kr;
+        document.getElementById('user-input').value = '';
+        document.getElementById('feedback-msg').textContent = '';
+    }
+
+    function nextSentence() {
+        currentIndex = (currentIndex < sentences.length - 1) ? currentIndex + 1 : 0;
+        updateUI();
+    }
+    function prevSentence() {
+        if (currentIndex > 0) { currentIndex--; updateUI(); }
+    }
+    function playAudio(rate) { playText(currentData.main, rate); }
+
+    function startListening() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) { alert("크롬 브라우저를 사용해주세요."); return; }
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.onstart = () => { document.getElementById('mic-btn').classList.add('listening'); };
+        recognition.onend = () => { document.getElementById('mic-btn').classList.remove('listening'); };
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('user-input').value = transcript;
+            document.getElementById('feedback-msg').textContent = "잘 들었습니다! 👍";
+        };
+        recognition.start();
+    }
+
+    function addHistory(text, index) { // index 매개변수 추가
+    const list = document.getElementById('history-list');
+    const now = new Date();
+    const timeStr = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+    
+    const item = document.createElement('div');
+    item.className = 'history-item';
+    // 문장 부분을 클릭하면 goToSentence 함수가 실행되도록 설정
+    item.innerHTML = `
+        <div style="flex-grow: 1; cursor: pointer;" onclick="goToSentence(${index})">
+            <span style="font-size:0.7rem; color:#999;">[${timeStr}]</span>
+            <span class="history-text" style="color:var(--primary-color); margin-left:5px; text-decoration: underline;">${text}</span>
+        </div>
+        <button class="del-btn" onclick="event.stopPropagation(); this.parentElement.remove()">X</button>
+    `;
+    list.insertBefore(item, list.firstChild);
+    }
+
+    function completeLearning() {
+    // 1. 중복 학습 확인 및 날짜 체크
+    let completedToday = JSON.parse(localStorage.getItem('eng_completed_today') || "[]");
+    let everCompleted = JSON.parse(localStorage.getItem('eng_ever_completed') || "[]");
+    const today = new Date().toDateString();
+    const lastLearnDate = localStorage.getItem('eng_last_learn_date');
+
+    if (lastLearnDate !== today) {
+        completedToday = [];
+        localStorage.setItem('eng_last_learn_date', today);
+    }
+
+    if (completedToday.includes(currentIndex)) {
+        alert("지호야, 이 문장은 오늘 이미 공부했어! 내일 또 만나자. 😊");
+        return;
+    }
+
+    // 2. 점수 계산 (41번 이상 첫 성공 5점, 복습 2점 / 40번 이하는 1점)
+    let earnedPoints = 0;
+    const isAdvanced = (currentIndex + 1 >= 41);
+    const isFirstTime = !everCompleted.includes(currentIndex);
+
+    if (isAdvanced) {
+        earnedPoints = isFirstTime ? 5 : 2;
+    } else {
+        earnedPoints = 1;
+    }
+
+    // 3. 데이터 저장
+    exp += earnedPoints;
+    completedToday.push(currentIndex);
+    if (isFirstTime) everCompleted.push(currentIndex);
+    
+    localStorage.setItem('eng_completed_today', JSON.stringify(completedToday));
+    localStorage.setItem('eng_ever_completed', JSON.stringify(everCompleted));
+
+    // 4. 랜덤 칭찬 및 배너 표시
+    const banner = document.getElementById('praise-banner');
+    
+    // 랜덤으로 객체(영어+한글) 하나 고르기
+    const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+    
+    // 배너에 영어와 한글 해석을 모두 표시
+    banner.querySelector('.praise-text').innerHTML = `
+        <div style="font-size: 1.5rem; color: var(--primary-color); font-weight: bold; margin-bottom: 10px;">
+            ${randomPraise.en}
+        </div>
+        <div style="font-size: 1.1rem; color: #555; font-family: 'Gaegu';">
+            ${randomPraise.ko}
+        </div>
+    `;
+    
+    banner.classList.add('show');
+    playText(randomPraise.en); // 영어 문장만 소리 내어 읽어줍니다.
+
+    // 5. 후속 처리 (불꽃 체크, 경험치 바 업데이트, 기록 추가)
+    checkStreak();
+    updateProgress();
+    
+    const bonusText = (isAdvanced && !isFirstTime) ? " (복습보너스)" : "";
+    addHistory(`${currentData.main} (+${earnedPoints}XP)${bonusText}`, currentIndex);
+}
+
+    function showLevelInfo() { alert(levels.map((l, i) => `Lv.${i+1}: ${l}`).join('
+')); }
+    function showStreakHistory() { alert(`🔥 현재 ${streak}일 연속 학습 중!`); }
+
+    window.onload = () => { updateUI(); updateProgress(); checkStreak(); };
+
+    function resetData() {
+    if(confirm("모든 점수와 기록을 처음부터 다시 시작할까요?")) {
+        localStorage.clear(); 
+        // 혹은 특정 항목만 지우려면 아래처럼 추가
+        // localStorage.removeItem('eng_completed_today');
+        location.reload();
+    }
+}
+    function goToSentence(targetIdx) {
+    if (targetIdx !== undefined && targetIdx >= 0) {
+        currentIndex = targetIdx; // 현재 인덱스를 기록된 인덱스로 변경
+        updateUI();              // 화면 갱신
+        // 아이가 이동했음을 알 수 있게 살짝 알림 (선택사항)
+        console.log(`${targetIdx + 1}번 문장으로 이동했습니다.`);
+    }
+}
+function closePraise() {
+    const banner = document.getElementById('praise-banner');
+    banner.classList.remove('show');
+}
+
+</script>
 
 </body>
 </html>
