@@ -22,6 +22,7 @@
             --highlight: #FD79A8;
             --success: #00B894;
             --border-light: #dfe6e9;
+            --tip-color: #feca57;
         }
 
         body {
@@ -45,7 +46,7 @@
             height: 95vh;
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            grid-template-rows: auto 1fr;
+            grid-template-rows: auto 1fr auto;
             gap: 12px;
         }
 
@@ -59,15 +60,15 @@
         }
 
         .status-bar, .bottom-section { grid-column: 1 / -1; }
-        .main-panel { gap: 10px; }
-        .side-panel { gap: 10px; justify-content: center; }
-        .bottom-section { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .main-panel { gap: 10px; grid-row: 2;}
+        .side-panel { gap: 10px; justify-content: flex-start; grid-row: 2; overflow-y: auto;}
+        .bottom-section { grid-row: 3; display: grid; grid-template-columns: 1fr; gap: 15px; }
 
         /* 4. 컴포넌트별 스타일 */
 
         /* 상태바 */
         .status-bar {
-            flex-direction: row; /* Fix: 가로 정렬 유지 */
+            flex-direction: row;
             justify-content: space-between;
             align-items: center;
         }
@@ -110,12 +111,12 @@
         /* 메인 패널 */
         .header-nav { display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .day-counter { font-size: 1rem; font-weight: bold; color: var(--primary-color); }
-        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 10px 0; line-height: 1.3; }
+        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 20px 0; line-height: 1.4; }
         .clickable-word { cursor: pointer; padding: 2px 4px; border-radius: 4px; display: inline-block; transition: 0.2s; }
         .clickable-word:hover { background-color: var(--border-light); color: var(--primary-color); transform: scale(1.05); }
-        .sentence-meaning { text-align: center; color: var(--text-sub); font-size: 1.1rem; margin-bottom: 5px; }
-        .word-click-info { text-align: center; color:var(--text-sub); font-size:0.8rem; margin-bottom:5px; }
-        .audio-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; flex-direction: row; }
+        .sentence-meaning { text-align: center; color: var(--text-sub); font-size: 1.1rem; margin-bottom: 10px; }
+        .word-click-info { text-align: center; color:var(--text-sub); font-size:0.8rem; margin-bottom:10px; }
+        .audio-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 10px; flex-direction: row; }
         .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; flex-direction: row; }
         .audio-btn:hover { background: var(--primary-color); color: white; }
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
@@ -128,26 +129,28 @@
             border-radius: 12px;
             padding: 12px;
             border-left: 4px solid var(--secondary-color);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             position: relative;
         }
-        .sub-card h3 { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--text-sub); }
-        .sub-en { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 2px; }
-        .sub-kr { font-size: 0.85rem; color: var(--text-sub); }
+        .sub-card:last-child { margin-bottom: 0; }
+        .sub-card h3 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-sub); display: flex; align-items: center; gap: 6px;}
+        .sub-en { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 3px; }
+        .sub-kr { font-size: 0.9rem; color: var(--text-sub); line-height: 1.5;}
         .sub-card.qa-card { border-left-color: #fab1a0; }
         .sub-card.ex-card { border-left-color: #74b9ff; }
+        .sub-card.tip-card { border-left-color: var(--tip-color); }
         .mini-speaker { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.1rem; background: none; border: none; }
 
         /* 하단 영역 */
-        .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-y: auto; }
+        .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-y: auto; max-height: 25vh; }
 
         /* 기록 영역 */
-        .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 5px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
+        .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 8px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .reset-btn { font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
         .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
         .history-item-main { flex-grow: 1; cursor: pointer; }
-        .history-item-timestamp { font-size:0.7rem; color:#999; }
-        .history-item-text { color:var(--primary-color); margin-left:5px; text-decoration: underline; }
+        .history-item-timestamp { font-size:0.7rem; color:#999; margin-right: 8px; }
+        .history-item-text { color:var(--primary-color); text-decoration: underline; }
         .del-btn { background: #ff7675; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
 
         /* 칭찬 배너 */
@@ -171,7 +174,9 @@
         /* 모바일 뷰 */
         body.mobile-view { height: auto; overflow-y: auto; }
         .container.mobile-view { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; overflow-y: auto; }
+        .container.mobile-view .side-panel { overflow-y: visible; }
         .container.mobile-view .bottom-section { grid-template-columns: 1fr; height: auto; }
+        .history-box.mobile-view { max-height: 40vh; }
     </style>
 </head>
 <body>
@@ -217,17 +222,22 @@
     <div class="side-panel">
         <div class="card">
             <div class="sub-card qa-card">
-                <button class="mini-speaker" onclick="speakText(currentSentenceData.q_en, 0.9)">🔊</button>
                 <h3>💬 실전 대화 (Q&A)</h3>
+                <button class="mini-speaker" onclick="speakText(currentSentenceData.q_en, 0.9)">🔊</button>
                 <div class="sub-en" id="qa-en"></div>
                 <div class="sub-kr" id="qa-kr"></div>
             </div>
 
             <div class="sub-card ex-card">
-                <button class="mini-speaker" onclick="speakText(currentSentenceData.ex_en, 0.9)">🔊</button>
                 <h3>✨ 응용 문장</h3>
+                <button class="mini-speaker" onclick="speakText(currentSentenceData.ex_en, 0.9)">🔊</button>
                 <div class="sub-en" id="ex-en"></div>
                 <div class="sub-kr" id="ex-kr"></div>
+            </div>
+            
+            <div class="sub-card tip-card" id="tip-card">
+                <h3>💡 오늘의 회화 팁</h3>
+                <div class="sub-kr" id="tip-text"></div>
             </div>
         </div>
     </div>
@@ -269,86 +279,86 @@
 
 <script>
     const sentences = [
-        { main: "I can read the book.", mean: "나는 책을 읽을 수 있어요.", q_en: "Can you read?", q_kr: "너 읽을 수 있니?", ex_en: "I can read the map.", ex_kr: "나는 지도를 읽을 수 있어." },
-        { main: "I can see the flower.", mean: "나는 꽃을 볼 수 있어요.", q_en: "What do you see?", q_kr: "뭐가 보여?", ex_en: "I can see the cat.", ex_kr: "나는 고양이를 볼 수 있어." },
-        { main: "I can swim in the sea.", mean: "나는 물속에서 수영할 수 있어요.", q_en: "Where can you swim?", q_kr: "어디서 수영할 수 있어?", ex_en: "I can swim in the pool.", ex_kr: "나는 수영장에서 수영할 수 있어." },
-        { main: "I can sing a song.", mean: "나는 노래를 부를 수 있어요.", q_en: "Can you sing?", q_kr: "너 노래할 수 있니?", ex_en: "I can sing a pop song.", ex_kr: "나는 팝송을 부를 수 있어." },
-        { main: "I can do anything.", mean: "나는 무엇이든 할 수 있어요.", q_en: "Are you ready?", q_kr: "준비됐니?", ex_en: "I can do my homework.", ex_kr: "나는 내 숙제를 할 수 있어." },
-        { main: "You are my friend.", mean: "너는 나의 친구야.", q_en: "Who am I to you?", q_kr: "난 너한테 누구야?", ex_en: "You are my teacher.", ex_kr: "당신은 나의 선생님이에요." },
-        { main: "You are so beautiful.", mean: "너는 너무 예뻐.", q_en: "Do I look okay?", q_kr: "나 괜찮아 보여?", ex_en: "You are so tall.", ex_kr: "너는 키가 정말 크구나." },
-        { main: "You are good at game.", mean: "너는 게임을 잘 하는구나.", q_en: "Am I good?", q_kr: "나 잘해?", ex_en: "You are good at soccer.", ex_kr: "너는 축구를 잘 하는구나." },
-        { main: "You are very kind.", mean: "너는 참 착하구나.", q_en: "Can I help you?", q_kr: "내가 도와줄까?", ex_en: "You are very smart.", ex_kr: "너는 참 똑똑하구나." },
-        { main: "You are the best!", mean: "너는 최고야!", q_en: "Did I win?", q_kr: "내가 이겼어?", ex_en: "You are the winner!", ex_kr: "네가 승자야!" },
-        { main: "I like swimming.", mean: "나는 수영을 좋아해요.", q_en: "What is your hobby?", q_kr: "취미가 뭐야?", ex_en: "I like skating.", ex_kr: "나는 스케이트 타는 걸 좋아해." },
-        { main: "She likes writing.", mean: "그녀는 쓰는 것을 좋아해요.", q_en: "Does she like books?", q_kr: "그녀는 책을 좋아해?", ex_en: "She likes painting.", ex_kr: "그녀는 그림 그리는 걸 좋아해." },
-        { main: "He likes driving.", mean: "그는 운전하는 것을 좋아해요.", q_en: "Does he have a car?", q_kr: "그는 차가 있어?", ex_en: "He likes fishing.", ex_kr: "그는 낚시하는 걸 좋아해." },
-        { main: "My dog likes running.", mean: "내 개는 뛰는 것을 좋아해요.", q_en: "Is your dog active?", q_kr: "네 강아지는 활동적이니?", ex_en: "My cat likes jumping.", ex_kr: "내 고양이는 점프하는 걸 좋아해." },
-        { main: "We like studying.", mean: "우리는 공부하는 것을 좋아해요.", q_en: "Are you smart?", q_kr: "너희들 똑똑하니?", ex_en: "We like playing.", ex_kr: "우리는 노는 걸 좋아해." },
-        { main: "I want to go to zoo.", mean: "저는 동물원에 가고 싶어요.", q_en: "Where do you want to go?", q_kr: "어디 가고 싶어?", ex_en: "I want to go to the beach.", ex_kr: "나는 바다에 가고 싶어." },
-        { main: "I want to buy a toy.", mean: "저는 장난감을 사고 싶어요.", q_en: "What do you want?", q_kr: "뭐 원해?", ex_en: "I want to buy a book.", ex_kr: "나는 책을 사고 싶어." },
-        { main: "I want some water.", mean: "저는 물을 먹고 싶어요.", q_en: "Are you thirsty?", q_kr: "목마르니?", ex_en: "I want some milk.", ex_kr: "나는 우유를 좀 원해." },
-        { main: "I want to be a teacher.", mean: "저는 선생님이 되고 싶어요.", q_en: "What is your dream?", q_kr: "꿈이 뭐야?", ex_en: "I want to be a doctor.", ex_kr: "나는 의사가 되고 싶어." },
-        { main: "I want to call him.", mean: "저는 그에게 전화를 하고 싶어요.", q_en: "Do you miss him?", q_kr: "그가 그립니?", ex_en: "I want to call my mom.", ex_kr: "나는 엄마한테 전화하고 싶어." },
-        { main: "I make a cake.", mean: "나는 케이크를 만들어요.", q_en: "What are you making?", q_kr: "뭐 만들고 있어?", ex_en: "I make a sandwich.", ex_kr: "나는 샌드위치를 만들어." },
-        { main: "She makes me happy.", mean: "그 여자는 나를 행복하게 했다.", q_en: "Do you love her?", q_kr: "그녀를 사랑하니?", ex_en: "Music makes me sad.", ex_kr: "음악은 나를 슬프게 해." },
-        { main: "He makes a doll for me.", mean: "그는 나에게 인형을 만들어 주었다.", q_en: "Is it a gift?", q_kr: "그거 선물이야?", ex_en: "She makes a card for me.", ex_kr: "그녀는 나에게 카드를 만들어 주었어." },
-        { main: "We make a promise.", mean: "우리는 약속을 했어요.", q_en: "Will you keep it?", q_kr: "약속 지킬 거야?", ex_en: "We make a plan.", ex_kr: "우리는 계획을 세워." },
-        { main: "I make everything.", mean: "내가 모든 것을 만들어요.", q_en: "Are you a creator?", q_kr: "네가 다 만든 거야?", ex_en: "I make breakfast.", ex_kr: "나는 아침밥을 만들어." },
-        { main: "She is not my sister.", mean: "그녀는 나의 자매가 아니에요.", q_en: "Who is she?", q_kr: "그녀는 누구야?", ex_en: "She is not my cousin.", ex_kr: "그녀는 내 사촌이 아니야." },
-        { main: "He is not my father.", mean: "그 남자는 우리 아빠가 아니에요.", q_en: "Is he your teacher?", q_kr: "저분 네 선생님이니?", ex_en: "He is not my brother.", ex_kr: "그는 내 형제가 아니야." },
-        { main: "It is not my cat.", mean: "그것은 나의 고양이가 아니에요.", q_en: "Whose cat is it?", q_kr: "누구 고양이야?", ex_en: "It is not my dog.", ex_kr: "그건 내 강아지가 아니야." },
-        { main: "They are not my pens.", mean: "그것들은 나의 펜들이 아니에요.", q_en: "Are these yours?", q_kr: "이것들 네 거야?", ex_en: "They are not my shoes.", ex_kr: "그것들은 내 신발이 아니야." },
-        { main: "Who is my teacher?", mean: "누가 저희 선생님이죠?", q_en: "Mr. Kim is your teacher.", q_kr: "김 선생님이 네 선생님이야.", ex_en: "Who is your coach?", ex_kr: "누가 네 코치님이니?" },
-        { main: "I have a big robot.", mean: "나는 큰 로봇을 가지고 있어요.", q_en: "What do you have?", q_kr: "너 뭐 가지고 있어?", ex_en: "I have a small ball.", ex_kr: "나는 작은 공을 가지고 있어." },
-        { main: "He has a nice car.", mean: "그는 좋은 차를 가지고 있어요.", q_en: "Is his car cool?", q_kr: "그의 차 멋지니?", ex_en: "He has a fast bike.", ex_kr: "그는 빠른 자전거를 가지고 있어." },
-        { main: "She has lovely smile.", mean: "그녀는 예쁜 웃음을 가지고 있어요.", q_en: "Do you like her?", q_kr: "그녀를 좋아하니?", ex_en: "She has long hair.", ex_kr: "그녀는 긴 머리를 가지고 있어." },
-        { main: "I have to go.", mean: "나는 가야만 해요.", q_en: "Why are you leaving?", q_kr: "왜 떠나는 거야?", ex_en: "I have to sleep.", ex_kr: "나는 자야만 해." },
-        { main: "We have to study.", mean: "우리는 공부를 해야만 해요.", q_en: "What do we do now?", q_kr: "우리 이제 뭐 해?", ex_en: "We have to clean.", ex_kr: "우리는 청소해야만 해." },
-        { main: "Let's go to the theater.", mean: "우리 함께 극장 가자.", q_en: "Okay, let's go!", q_kr: "좋아, 가자!", ex_en: "Let's go to the park.", ex_kr: "공원에 가자." },
-        { main: "Let's sing together.", mean: "우리 함께 노래하자.", q_en: "Sounds fun!", q_kr: "재미있겠다!", ex_en: "Let's dance together.", ex_kr: "함께 춤추자." },
-        { main: "This question is hard.", mean: "이 질문은 어려워요.", q_en: "Can you answer?", q_kr: "답할 수 있니?", ex_en: "This game is hard.", ex_kr: "이 게임은 어려워." },
-        { main: "This chair is too hard.", mean: "이 의자는 너무 딱딱해요.", q_en: "Is it comfortable?", q_kr: "그거 편안해?", ex_en: "This bed is too soft.", ex_kr: "이 침대는 너무 폭신해." },
-        { main: "He studies hard.", mean: "그는 공부를 열심히 해요.", q_en: "Is he a good student?", q_kr: "그는 착한 학생이니?", ex_en: "He works hard.", ex_kr: "그는 열심히 일해." },
-        { main: "I saw a bear on this mountain.", mean: "나는 산에서 곰을 봤어요.", q_en: "What did you see?", q_kr: "뭐 봤어?", ex_en: "I saw a bird in the sky.", ex_kr: "나는 하늘에서 새를 봤어." },
-        { main: "My dog hates a bath.", mean: "내 개는 목욕을 싫어해요.", q_en: "Does he like water?", q_kr: "걔 물 좋아해?", ex_en: "My cat hates milk.", ex_kr: "내 고양이는 우유를 싫어해." },
-        { main: "I have a bath.", mean: "나는 목욕을 해요.", q_en: "What are you doing?", q_kr: "뭐 해?", ex_en: "I have a snack.", ex_kr: "나는 간식을 먹어." },
-        { main: "I want to live in a big city.", mean: "나는 큰 도시에서 살고 싶어요.", q_en: "Where do you want to live?", q_kr: "어디 살고 싶어?", ex_en: "I want to live in a small house.", ex_kr: "나는 작은 집에 살고 싶어." },
-        { main: "I heard the sound of music.", mean: "나는 음악 소리를 들었어.", q_en: "What did you hear?", q_kr: "무슨 소리 들었어?", ex_en: "I heard the sound of rain.", ex_kr: "나는 빗소리를 들었어." },
-        { main: "That sounds good.", mean: "그거 좋은 생각이네.", q_en: "Let's play soccer!", q_kr: "축구 하자!", ex_en: "That sounds great.", ex_kr: "그거 정말 좋네." },
-        { main: "I will go to Spain in this year.", mean: "나는 올해 안에 스페인에 갈 거야.", q_en: "Where will you go?", q_kr: "어디 갈 거야?", ex_en: "I will go to school tomorrow.", ex_kr: "나는 내일 학교에 갈 거야." },
-        { main: "She's 13 years old.", mean: "그녀는 13살이야.", q_en: "How old is she?", q_kr: "그녀는 몇 살이야?", ex_en: "He is 10 years old.", ex_kr: "그는 10살이야." },
-        { main: "The noise of the drum is too loud.", mean: "그 드럼의 소리는 너무 커.", q_en: "Is it okay?", q_kr: "소리 괜찮아?", ex_en: "The noise of the TV is too loud.", ex_kr: "TV 소리가 너무 커." },
-        { main: "Don't make noise.", mean: "소란을 피우지 마세요.", q_en: "Can I shout?", q_kr: "소리 질러도 돼요?", ex_en: "Don't make a mess.", ex_kr: "어지럽히지 마세요." },
-        { main: "Apples are round, sweet fruit.", mean: "사과는 둥글고, 달콤한 과일이다.", q_en: "What are apples?", q_kr: "사과가 뭐야?", ex_en: "Bananas are long, yellow fruit.", ex_kr: "바나나는 길고 노란 과일이야." },
-        { main: "I drink the fruit juice.", mean: "나는 과일주스를 마십니다.", q_en: "What do you drink?", q_kr: "뭐 마셔?", ex_en: "I drink the cold water.", ex_kr: "나는 찬물을 마셔." },
-        { main: "The bridge is very long.", mean: "그 다리는 매우 길어.", q_en: "Is it a long bridge?", q_kr: "그거 긴 다리야?", ex_en: "The ruler is very short.", ex_kr: "그 자는 매우 짧아." },
-        { main: "Long time no see.", mean: "오랜만입니다.", q_en: "Nice to see you again!", q_kr: "다시 만나서 반가워요!", ex_en: "Long time no talk.", ex_kr: "오랜만이야-대화한 지 오래됐을 때." },
-        { main: "Count from one to ten.", mean: "1부터 10까지 세주세요.", q_en: "Can you count?", q_kr: "숫자 셀 수 있니?", ex_en: "Count from ten to one.", ex_kr: "10부터 1까지 거꾸로 세봐." },
-        { main: "He filled a cup with water.", mean: "그 남자가 물을 잔에 가득 담았다.", q_en: "What did he do?", q_kr: "그가 뭐 했어?", ex_en: "She filled a bag with books.", ex_kr: "그녀는 가방에 책을 가득 채웠어." },
-        { main: "My family lives in Boston.", mean: "내 가족들은 보스턴에 살아요.", q_en: "Where do you live?", q_kr: "어디 살아?", ex_en: "My friend lives in Seoul.", ex_kr: "내 친구는 서울에 살아." },
-        { main: "Tomatoes are good for your body.", mean: "토마토는 너의 몸에 좋아.", q_en: "Are they healthy?", q_kr: "이거 몸에 좋아?", ex_en: "Carrots are good for your eyes.", ex_kr: "당근은 눈에 좋아." },
-        { main: "I get up early every day.", mean: "나는 매일 일찍 일어나요.", q_en: "Do you sleep late?", q_kr: "늦게 자니?", ex_en: "I get up at seven every day.", ex_kr: "나는 매일 7시에 일어나." },
-        { main: "I see flower in the early morning.", mean: "내가 아침 일찍 꽃을 보았어.", q_en: "When did you see it?", q_kr: "언제 봤어?", ex_en: "I see birds in the early morning.", ex_kr: "나는 아침 일찍 새들을 봐." },
-        { main: "Who is that guy?", mean: "저 사람은 누구야?", q_en: "He is my uncle.", q_kr: "우리 삼촌이야.", ex_en: "Who is that girl?", ex_kr: "저 여자는 누구야?" },
-        { main: "Where is your school?", mean: "너희 학교는 어디니?", q_en: "It's near here.", q_kr: "여기 근처에 있어.", ex_en: "Where is your bag?", ex_kr: "네 가방 어디 있니?" },
-        { main: "What is your favorite subject?", mean: "네가 가장 좋아하는 과목이 뭐야?", q_en: "I like Art.", q_kr: "나는 미술을 좋아해.", ex_en: "What is your favorite color?", ex_kr: "네가 좋아하는 색깔은 뭐야?" },
-        { main: "When do you go to your school?", mean: "너는 언제 학교에 가니?", q_en: "At eight o'clock.", q_kr: "8시에 가.", ex_en: "When do you sleep?", ex_kr: "너 언제 자니?" },
-        { main: "How much is this?", mean: "이거 얼마예요?", q_en: "It's one dollar.", q_kr: "1달러예요.", ex_en: "How much is the milk?", ex_kr: "우유가 얼마예요?" },
-        { main: "My brother sings very well.", mean: "내 형제는 노래를 매우 잘해.", q_en: "Is he a singer?", q_kr: "그는 가수니?", ex_en: "My sister dances very well.", ex_kr: "내 여동생은 춤을 아주 잘 춰." },
-        { main: "He looks well.", mean: "그 남자는 좋아 보이네.", q_en: "Is he okay now?", q_kr: "그 사람 이제 괜찮아?", ex_en: "She looks happy.", ex_kr: "그녀는 행복해 보여." },
-        { main: "Please call the police.", mean: "경찰을 불러주세요.", q_en: "What happened?", q_kr: "무슨 일이에요?", ex_en: "Please call my mom.", ex_kr: "우리 엄마 좀 불러주세요." },
-        { main: "Are you hungry now?", mean: "배가 고프니?", q_en: "Yes, a little.", q_kr: "네, 조금요.", ex_en: "Are you sleepy now?", ex_kr: "너 지금 졸리니?" },
-        { main: "Give me some water.", mean: "물 좀 주세요.", q_en: "Here you are.", q_kr: "여기 있어요.", ex_en: "Give me some candy.", ex_kr: "사탕 좀 주세요." },
-        { main: "I watered the flowers.", mean: "나는 꽃에 물을 주었다.", q_en: "What did you do?", q_kr: "뭐 했어?", ex_en: "I watered the tree.", ex_kr: "나는 나무에 물을 주었어." },
-        { main: "He traveled around the world.", mean: "그는 전 세계를 여행해요.", q_en: "Does he like trips?", q_kr: "그는 여행을 좋아해?", ex_en: "She traveled to Jeju island.", ex_kr: "그녀는 제주도를 여행했어." },
-        { main: "I don't know what to do.", mean: "내가 무엇을 해야 할지 모르겠어요.", q_en: "Are you bored?", q_kr: "심심하니?", ex_en: "I don't know what to eat.", ex_kr: "나는 뭘 먹어야 할지 모르겠어." },
-        { main: "I don't understand your saying.", mean: "당신의 말을 잘 이해하지 못하겠습니다.", q_en: "Do you know what I mean?", q_kr: "내 말 알겠니?", ex_en: "I don't understand this book.", ex_kr: "나는 이 책을 이해 못 하겠어." },
-        { main: "Can you help me?", mean: "도와주실 수 있으세요?", q_en: "Sure, what's wrong?", q_kr: "물론이죠, 무슨 일이에요?", ex_en: "Can you show me?", ex_kr: "나한테 보여줄 수 있니?" },
-        { main: "What’s up?", mean: "잘 지냈어? (안녕?)", q_en: "Hi! Not much.", q_kr: "안녕! 별일 없어.", ex_en: "What's new?", ex_kr: "새로운 소식 있어?" },
-        { main: "Nothing much.", mean: "별거 없었어요.", q_en: "What's up?", q_kr: "잘 지냈어?", ex_en: "Nothing special.", ex_kr: "특별한 일 없었어." },
-        { main: "Studying math right now.", mean: "당장 수학 공부를 합시다.", q_en: "What are we doing?", q_kr: "우리 뭐 하는 거야?", ex_en: "Studying English right now.", ex_kr: "지금 당장 영어 공부를 하자." },
-        { main: "Sounds boring.", mean: "지루해 보이네요.", q_en: "Do you want to study?", q_kr: "공부하고 싶어?", ex_en: "Sounds funny.", ex_kr: "웃기게 들리네 / 재미있겠다." },
-        { main: "Are you studying for your test?", mean: "시험 때문에 공부하는 거니?", q_en: "Yes, I am.", q_kr: "네, 맞아요.", ex_en: "Are you waiting for your friend?", ex_kr: "친구 기다리는 중이니?" }
+        { main: "I can read the book.", mean: "나는 책을 읽을 수 있어요.", q_en: "Can you read?", q_kr: "너 읽을 수 있니?", ex_en: "I can read the map.", ex_kr: "나는 지도를 읽을 수 있어.", tip: "'Can'은 '~할 수 있다'는 능력을 나타내는 가장 기본적인 단어예요. 'I can' 뒤에 원하는 행동을 넣어보세요!" },
+        { main: "I can see the flower.", mean: "나는 꽃을 볼 수 있어요.", q_en: "What do you see?", q_kr: "뭐가 보여?", ex_en: "I can see the cat.", ex_kr: "나는 고양이를 볼 수 있어.", tip: "'see'는 눈으로 무언가를 자연스럽게 보는 것을 의미해요. 'look at'처럼 의도적으로 보는 것과는 살짝 다르답니다." },
+        { main: "I can swim in the sea.", mean: "나는 물속에서 수영할 수 있어요.", q_en: "Where can you swim?", q_kr: "어디서 수영할 수 있어?", ex_en: "I can swim in the pool.", ex_kr: "나는 수영장에서 수영할 수 있어.", tip: "'in the sea', 'in the pool' 처럼 'in'은 어떤 장소 안에서 일어나는 일을 설명할 때 사용돼요." },
+        { main: "I can sing a song.", mean: "나는 노래를 부를 수 있어요.", q_en: "Can you sing?", q_kr: "너 노래할 수 있니?", ex_en: "I can sing a pop song.", ex_kr: "나는 팝송을 부를 수 있어.", tip: "'a song'은 '노래 한 곡'을 의미해요. 좋아하는 노래를 떠올리며 문장을 연습해보세요!" },
+        { main: "I can do anything.", mean: "나는 무엇이든 할 수 있어요.", q_en: "Are you ready?", q_kr: "준비됐니?", ex_en: "I can do my homework.", ex_kr: "나는 내 숙제를 할 수 있어.", tip: "'anything'은 '무엇이든'이라는 뜻으로, 아주 자신감 넘치는 표현이에요! 스스로를 응원할 때 사용해보세요." },
+        { main: "You are my friend.", mean: "너는 나의 친구야.", q_en: "Who am I to you?", q_kr: "난 너한테 누구야?", ex_en: "You are my teacher.", ex_kr: "당신은 나의 선생님이에요.", tip: "'You are'는 상대방이 어떤 사람인지, 어떤 상태인지를 설명할 때 사용해요. 'You are...' 뒤에 다양한 단어를 넣어보세요." },
+        { main: "You are so beautiful.", mean: "너는 너무 예뻐.", q_en: "Do I look okay?", q_kr: "나 괜찮아 보여?", ex_en: "You are so tall.", ex_kr: "너는 키가 정말 크구나.", tip: "'so'는 '아주', '정말' 이라는 뜻으로, 무언가를 강조하고 싶을 때 사용해요. 칭찬할 때 사용하면 마음이 더 잘 전달돼요." },
+        { main: "You are good at game.", mean: "너는 게임을 잘 하는구나.", q_en: "Am I good?", q_kr: "나 잘해?", ex_en: "You are good at soccer.", ex_kr: "너는 축구를 잘 하는구나.", tip: "'be good at ~'은 '~를 잘한다'는 뜻의 아주 유용한 표현이에요. 내가 잘하는 것을 영어로 말해보세요!" },
+        { main: "You are very kind.", mean: "너는 참 착하구나.", q_en: "Can I help you?", q_kr: "내가 도와줄까?", ex_en: "You are very smart.", ex_kr: "너는 참 똑똑하구나.", tip: "'kind', 'smart' 처럼 다른 사람의 성격을 칭찬하는 단어들을 알아두면 친구와 더 사이좋게 지낼 수 있어요." },
+        { main: "You are the best!", mean: "너는 최고야!", q_en: "Did I win?", q_kr: "내가 이겼어?", ex_en: "You are the winner!", ex_kr: "네가 승자야!", tip: "'the best'는 '최고'라는 뜻의 가장 강력한 칭찬이에요! 친구나 가족에게 힘을 주고 싶을 때 사용해보세요." },
+        { main: "I like swimming.", mean: "나는 수영을 좋아해요.", q_en: "What is your hobby?", q_kr: "취미가 뭐야?", ex_en: "I like skating.", ex_kr: "나는 스케이트 타는 걸 좋아해.", tip: "'like' 뒤에 행동을 나타내는 단어를 붙일 때는 '-ing'를 붙여요. (예: swim -> swimming, read -> reading)" },
+        { main: "She likes writing.", mean: "그녀는 쓰는 것을 좋아해요.", q_en: "Does she like books?", q_kr: "그녀는 책을 좋아해?", ex_en: "She likes painting.", ex_kr: "그녀는 그림 그리는 걸 좋아해.", tip: "주어가 '나(I)'나 '너(You)'가 아닌 다른 한 명일 때는 'like' 대신 'likes'를 사용해요." },
+        { main: "He likes driving.", mean: "그는 운전하는 것을 좋아해요.", q_en: "Does he have a car?", q_kr: "그는 차가 있어?", ex_en: "He likes fishing.", ex_kr: "그는 낚시하는 걸 좋아해.", tip: "남자 한 명을 가리키는 'He' 역시 'likes'를 사용해요. 'She'와 'He'를 잘 구별해서 사용해보세요." },
+        { main: "My dog likes running.", mean: "내 개는 뛰는 것을 좋아해요.", q_en: "Is your dog active?", q_kr: "네 강아지는 활동적이니?", ex_en: "My cat likes jumping.", ex_kr: "내 고양이는 점프하는 걸 좋아해.", tip: "동물이나 사물 하나를 말할 때도 'likes'를 쓸 수 있어요. 예를 들어 'My robot likes dancing.' 처럼요!" },
+        { main: "We like studying.", mean: "우리는 공부하는 것을 좋아해요.", q_en: "Are you smart?", q_kr: "너희들 똑똑하니?", ex_en: "We like playing.", ex_kr: "우리는 노는 걸 좋아해.", tip: "'We'는 '우리'라는 뜻으로, 여러 명을 가리켜요. 여러 명일 때는 다시 'likes'가 아닌 'like'를 사용한답니다." },
+        { main: "I want to go to zoo.", mean: "저는 동물원에 가고 싶어요.", q_en: "Where do you want to go?", q_kr: "어디 가고 싶어?", ex_en: "I want to go to the beach.", ex_kr: "나는 바다에 가고 싶어.", tip: "'want to'는 '~하고 싶다'는 뜻이에요. 'I want to' 뒤에 하고 싶은 것을 말해보세요. (예: I want to play!)" },
+        { main: "I want to buy a toy.", mean: "저는 장난감을 사고 싶어요.", q_en: "What do you want?", q_kr: "뭐 원해?", ex_en: "I want to buy a book.", ex_kr: "나는 책을 사고 싶어.", tip: "'buy'는 '사다'라는 뜻이에요. 가게에서 물건을 살 때 아주 유용한 단어랍니다." },
+        { main: "I want some water.", mean: "저는 물을 먹고 싶어요.", q_en: "Are you thirsty?", q_kr: "목마르니?", ex_en: "I want some milk.", ex_kr: "나는 우유를 좀 원해.", tip: "'some'은 '조금'이라는 뜻이에요. 셀 수 없는 액체(water, milk)나 음식을 원할 때 'a' 대신 'some'을 써요." },
+        { main: "I want to be a teacher.", mean: "저는 선생님이 되고 싶어요.", q_en: "What is your dream?", q_kr: "꿈이 뭐야?", ex_en: "I want to be a doctor.", ex_kr: "나는 의사가 되고 싶어.", tip: "'want to be'는 '~가 되고 싶다'는 뜻으로, 장래희망을 말할 때 사용해요. 지호의 꿈은 무엇인가요?" },
+        { main: "I want to call him.", mean: "저는 그에게 전화를 하고 싶어요.", q_en: "Do you miss him?", q_kr: "그가 그립니?", ex_en: "I want to call my mom.", ex_kr: "나는 엄마한테 전화하고 싶어.", tip: "'call'은 '전화하다'라는 뜻이에요. 멀리 있는 사람과 이야기하고 싶을 때 사용하는 단어죠." },
+        { main: "I make a cake.", mean: "나는 케이크를 만들어요.", q_en: "What are you making?", q_kr: "뭐 만들고 있어?", ex_en: "I make a sandwich.", ex_kr: "나는 샌드위치를 만들어.", tip: "'make'는 '만들다'라는 뜻으로, 요리, 조립 등 무언가를 새로 만들어낼 때 모두 쓸 수 있어요." },
+        { main: "She makes me happy.", mean: "그 여자는 나를 행복하게 했다.", q_en: "Do you love her?", q_kr: "그녀를 사랑하니?", ex_en: "Music makes me sad.", ex_kr: "음악은 나를 슬프게 해.", tip: "'make'는 '만들다' 외에 '~를 ...하게 만들다' 라는 뜻도 있어요. 'It makes me smile.' (그건 날 웃게 해) 처럼요." },
+        { main: "He makes a doll for me.", mean: "그는 나에게 인형을 만들어 주었다.", q_en: "Is it a gift?", q_kr: "그거 선물이야?", ex_en: "She makes a card for me.", ex_kr: "그녀는 나에게 카드를 만들어 주었어.", tip: "'for me'는 '나를 위해' 라는 뜻이에요. 누군가 나를 위해 무언가를 해줬을 때 고마움을 표현할 수 있어요." },
+        { main: "We make a promise.", mean: "우리는 약속을 했어요.", q_en: "Will you keep it?", q_kr: "약속 지킬 거야?", ex_en: "We make a plan.", ex_kr: "우리는 계획을 세워.", tip: "'make a promise'는 '약속하다', 'make a plan'은 '계획을 세우다' 처럼 'make'는 다른 단어와 합쳐져 다양하게 쓰여요." },
+        { main: "I make everything.", mean: "내가 모든 것을 만들어요.", q_en: "Are you a creator?", q_kr: "네가 다 만든 거야?", ex_en: "I make breakfast.", ex_kr: "나는 아침밥을 만들어.", tip: "'everything'은 '모든 것'이라는 뜻이에요. 요리, 청소, 숙제 등 모든 것을 다 한다는 느낌을 줄 수 있어요." },
+        { main: "She is not my sister.", mean: "그녀는 나의 자매가 아니에요.", q_en: "Who is she?", q_kr: "그녀는 누구야?", ex_en: "She is not my cousin.", ex_kr: "그녀는 내 사촌이 아니야.", tip: "'is not'은 '~가 아니다'라는 뜻이에요. 'You are not a baby.' (너는 아기가 아니야) 처럼 쓸 수 있어요." },
+        { main: "He is not my father.", mean: "그 남자는 우리 아빠가 아니에요.", q_en: "Is he your teacher?", q_kr: "저분 네 선생님이니?", ex_en: "He is not my brother.", ex_kr: "그는 내 형제가 아니야.", tip: "'He is not'은 '그는 ~가 아니다'라는 뜻이에요. 사람을 설명할 때 자주 사용되니 익혀두세요." },
+        { main: "It is not my cat.", mean: "그것은 나의 고양이가 아니에요.", q_en: "Whose cat is it?", q_kr: "누구 고양이야?", ex_en: "It is not my dog.", ex_kr: "그건 내 강아지가 아니야.", tip: "'It'은 물건이나 동물을 가리킬 때 사용해요. '그것'이라고 해석되죠. 'It is not'은 '그것은 ~가 아니다'가 됩니다." },
+        { main: "They are not my pens.", mean: "그것들은 나의 펜들이 아니에요.", q_en: "Are these yours?", q_kr: "이것들 네 거야?", ex_en: "They are not my shoes.", ex_kr: "그것들은 내 신발이 아니야.", tip: "여러 개를 말할 때는 'It is not' 대신 'They are not'을 사용해요. 'pens', 'shoes' 처럼 여러 개를 뜻하는 단어와 짝꿍이에요." },
+        { main: "Who is my teacher?", mean: "누가 저희 선생님이죠?", q_en: "Mr. Kim is your teacher.", q_kr: "김 선생님이 네 선생님이야.", ex_en: "Who is your coach?", ex_kr: "누가 네 코치님이니?", tip: "'Who'는 '누구?'라고 물어볼 때 사용해요. 궁금한 사람이 있을 때 'Who is...?' 라고 질문을 시작할 수 있어요." },
+        { main: "I have a big robot.", mean: "나는 큰 로봇을 가지고 있어요.", q_en: "What do you have?", q_kr: "너 뭐 가지고 있어?", ex_en: "I have a small ball.", ex_kr: "나는 작은 공을 가지고 있어.", tip: "'have'는 '가지고 있다'는 뜻이에요. 내가 가진 물건을 설명할 때 'I have...' 라고 말할 수 있어요." },
+        { main: "He has a nice car.", mean: "그는 좋은 차를 가지고 있어요.", q_en: "Is his car cool?", q_kr: "그의 차 멋지니?", ex_en: "He has a fast bike.", ex_kr: "그는 빠른 자전거를 가지고 있어.", tip: "주어가 'He'나 'She'처럼 다른 한 명일 때는 'have'가 'has'로 변신해요! 'He have'가 아니라 'He has'라고 꼭 기억하세요." },
+        { main: "She has lovely smile.", mean: "그녀는 예쁜 웃음을 가지고 있어요.", q_en: "Do you like her?", q_kr: "그녀를 좋아하니?", ex_en: "She has long hair.", ex_kr: "그녀는 긴 머리를 가지고 있어.", tip: "'lovely'는 '사랑스러운' 이라는 아주 예쁜 단어예요. 칭찬할 때 사용하면 좋아요!" },
+        { main: "I have to go.", mean: "나는 가야만 해요.", q_en: "Why are you leaving?", q_kr: "왜 떠나는 거야?", ex_en: "I have to sleep.", ex_kr: "나는 자야만 해.", tip: "'have to'는 '~해야만 한다'는 강한 의무를 나타내요. 'I want to'(~하고 싶다)와는 의미가 다르니 구별해서 사용하세요." },
+        { main: "We have to study.", mean: "우리는 공부를 해야만 해요.", q_en: "What do we do now?", q_kr: "우리 이제 뭐 해?", ex_en: "We have to clean.", ex_kr: "우리는 청소해야만 해.", tip: "'We have to'는 '우리는 ~해야만 한다'는 뜻이에요. 함께 무언가를 해야 할 때 사용할 수 있어요." },
+        { main: "Let's go to the theater.", mean: "우리 함께 극장 가자.", q_en: "Okay, let's go!", q_kr: "좋아, 가자!", ex_en: "Let's go to the park.", ex_kr: "공원에 가자.", tip: "'Let's'는 '우리 ~하자!'라고 제안할 때 사용하는 아주 친근한 표현이에요. 친구에게 같이 놀자고 할 때 써보세요!" },
+        { main: "Let's sing together.", mean: "우리 함께 노래하자.", q_en: "Sounds fun!", q_kr: "재미있겠다!", ex_en: "Let's dance together.", ex_kr: "함께 춤추자.", tip: "'together'는 '함께', '같이'라는 뜻이에요. 'Let's'와 함께 쓰면 '우리 같이 ~하자!'라는 의미가 더욱 분명해져요." },
+        { main: "This question is hard.", mean: "이 질문은 어려워요.", q_en: "Can you answer?", q_kr: "답할 수 있니?", ex_en: "This game is hard.", ex_kr: "이 게임은 어려워.", tip: "'hard'는 '어려운'이라는 뜻 외에도 '딱딱한'이라는 뜻도 있어요. 다음에 나오는 문장과 비교해보세요!" },
+        { main: "This chair is too hard.", mean: "이 의자는 너무 딱딱해요.", q_en: "Is it comfortable?", q_kr: "그거 편안해?", ex_en: "This bed is too soft.", ex_kr: "이 침대는 너무 폭신해.", tip: "여기서 'hard'는 '딱딱한'이라는 뜻으로 쓰였어요. 영어 단어는 문장에 따라 뜻이 달라질 수 있다는 점을 기억하세요!" },
+        { main: "He studies hard.", mean: "그는 공부를 열심히 해요.", q_en: "Is he a good student?", q_kr: "그는 착한 학생이니?", ex_en: "He works hard.", ex_kr: "그는 열심히 일해.", tip: "여기서 'hard'는 '열심히'라는 뜻이에요! 'study hard' (열심히 공부하다), 'work hard' (열심히 일하다) 처럼 쓰인답니다." },
+        { main: "I saw a bear on this mountain.", mean: "나는 산에서 곰을 봤어요.", q_en: "What did you see?", q_kr: "뭐 봤어?", ex_en: "I saw a bird in the sky.", ex_kr: "나는 하늘에서 새를 봤어.", tip: "'saw'는 'see'(보다)의 과거 형태예요. 이미 일어난 일을 말할 때 사용해요. 'I see'는 지금 보는 것, 'I saw'는 예전에 본 것을 의미해요." },
+        { main: "My dog hates a bath.", mean: "내 개는 목욕을 싫어해요.", q_en: "Does he like water?", q_kr: "걔 물 좋아해?", ex_en: "My cat hates milk.", ex_kr: "내 고양이는 우유를 싫어해.", tip: "'hate'는 'like'의 반대말로, '아주 싫어하다'라는 뜻이에요. 정말 싫어하는 것이 있을 때 사용할 수 있어요." },
+        { main: "I have a bath.", mean: "나는 목욕을 해요.", q_en: "What are you doing?", q_kr: "뭐 해?", ex_en: "I have a snack.", ex_kr: "나는 간식을 먹어.", tip: "'have'는 '가지다' 외에도 'have a bath'(목욕하다), 'have a snack'(간식을 먹다) 처럼 다양한 행동을 표현할 수 있어요." },
+        { main: "I want to live in a big city.", mean: "나는 큰 도시에서 살고 싶어요.", q_en: "Where do you want to live?", q_kr: "어디 살고 싶어?", ex_en: "I want to live in a small house.", ex_kr: "나는 작은 집에 살고 싶어.", tip: "'live in'은 '~에 살다'라는 뜻이에요. 내가 사는 장소를 말할 때 사용해보세요. (예: I live in Seoul.)" },
+        { main: "I heard the sound of music.", mean: "나는 음악 소리를 들었어.", q_en: "What did you hear?", q_kr: "무슨 소리 들었어?", ex_en: "I heard the sound of rain.", ex_kr: "나는 빗소리를 들었어.", tip: "'heard'는 'hear'(듣다)의 과거 형태예요. 'I hear'는 지금 들리는 소리, 'I heard'는 아까 들었던 소리를 말해요." },
+        { main: "That sounds good.", mean: "그거 좋은 생각이네.", q_en: "Let's play soccer!", q_kr: "축구 하자!", ex_en: "That sounds great.", ex_kr: "그거 정말 좋네.", tip: "상대방의 제안이나 생각에 동의할 때 쓰는 멋진 표현이에요. 'Good!' 대신 'That sounds good!'이라고 말하면 훨씬 자연스러워요." },
+        { main: "I will go to Spain in this year.", mean: "나는 올해 안에 스페인에 갈 거야.", q_en: "Where will you go?", q_kr: "어디 갈 거야?", ex_en: "I will go to school tomorrow.", ex_kr: "나는 내일 학교에 갈 거야.", tip: "'will'은 미래에 할 일을 말할 때 사용해요. '~할 것이다'라는 뜻이죠. 'I will...' 뒤에 미래의 계획을 말해보세요." },
+        { main: "She's 13 years old.", mean: "그녀는 13살이야.", q_en: "How old is she?", q_kr: "그녀는 몇 살이야?", ex_en: "He is 10 years old.", ex_kr: "그는 10살이야.", tip: "나이를 말할 때는 '숫자 + years old'라고 표현해요. 'I am 8 years old.' 처럼 내 나이를 말할 수 있어요." },
+        { main: "The noise of the drum is too loud.", mean: "그 드럼의 소리는 너무 커.", q_en: "Is it okay?", q_kr: "소리 괜찮아?", ex_en: "The noise of the TV is too loud.", ex_kr: "TV 소리가 너무 커.", tip: "'too'는 '너무'라는 뜻으로, 보통 부정적인 상황에서 쓰여요. 'too loud'는 '너무 시끄럽다'는 의미가 되죠." },
+        { main: "Don't make noise.", mean: "소란을 피우지 마세요.", q_en: "Can I shout?", q_kr: "소리 질러도 돼요?", ex_en: "Don't make a mess.", ex_kr: "어지럽히지 마세요.", tip: "'Don't'는 '~하지 마'라고 명령하거나 부탁할 때 문장 맨 앞에 붙여요. 조용히 해야 할 곳에서 유용하게 쓸 수 있는 표현이에요." },
+        { main: "Apples are round, sweet fruit.", mean: "사과는 둥글고, 달콤한 과일이다.", q_en: "What are apples?", q_kr: "사과가 뭐야?", ex_en: "Bananas are long, yellow fruit.", ex_kr: "바나나는 길고 노란 과일이야.", tip: "'round'(둥근), 'sweet'(달콤한) 처럼 사물의 특징을 설명하는 단어를 알면 영어로 세상을 더 자세히 표현할 수 있어요." },
+        { main: "I drink the fruit juice.", mean: "나는 과일주스를 마십니다.", q_en: "What do you drink?", q_kr: "뭐 마셔?", ex_en: "I drink the cold water.", ex_kr: "나는 찬물을 마셔.", tip: "'drink'는 '마시다'라는 뜻의 단어예요. 'eat'(먹다)와 헷갈리지 않도록 주의하세요!" },
+        { main: "The bridge is very long.", mean: "그 다리는 매우 길어.", q_en: "Is it a long bridge?", q_kr: "그거 긴 다리야?", ex_en: "The ruler is very short.", ex_kr: "그 자는 매우 짧아.", tip: "'long'은 '긴', 'short'는 '짧은' 이라는 뜻의 반대말이에요. 이렇게 반대되는 단어를 함께 외우면 더 기억하기 쉬워요." },
+        { main: "Long time no see.", mean: "오랜만입니다.", q_en: "Nice to see you again!", q_kr: "다시 만나서 반가워요!", ex_en: "Long time no talk.", ex_kr: "오랜만이야-대화한 지 오래됐을 때.", tip: "정말 오랜만에 만난 사람에게 반가움을 표현할 때 사용하는 말이에요. 친구처럼 격식 없는 사이에서 자주 사용됩니다." },
+        { main: "Count from one to ten.", mean: "1부터 10까지 세주세요.", q_en: "Can you count?", q_kr: "숫자 셀 수 있니?", ex_en: "Count from ten to one.", ex_kr: "10부터 1까지 거꾸로 세봐.", tip: "'count'는 '숫자를 세다'라는 뜻이에요. 'from A to B'는 'A부터 B까지'라는 범위를 나타내요." },
+        { main: "He filled a cup with water.", mean: "그 남자가 물을 잔에 가득 담았다.", q_en: "What did he do?", q_kr: "그가 뭐 했어?", ex_en: "She filled a bag with books.", ex_kr: "그녀는 가방에 책을 가득 채웠어.", tip: "'fill A with B'는 'A를 B로 채우다'라는 뜻이에요. 'cup'을 'bag'으로, 'water'를 'books'로 바꿔서 응용해보세요." },
+        { main: "My family lives in Boston.", mean: "내 가족들은 보스턴에 살아요.", q_en: "Where do you live?", q_kr: "어디 살아?", ex_en: "My friend lives in Seoul.", ex_kr: "내 친구는 서울에 살아.", tip: "'family'는 한 명 이상으로 이루어진 '가족' 전체를 의미하지만, 하나의 덩어리로 취급해서 'lives'를 사용한답니다." },
+        { main: "Tomatoes are good for your body.", mean: "토마토는 너의 몸에 좋아.", q_en: "Are they healthy?", q_kr: "이거 몸에 좋아?", ex_en: "Carrots are good for your eyes.", ex_kr: "당근은 눈에 좋아.", tip: "'be good for ~'는 '~에 좋다'는 뜻이에요. 건강에 좋은 음식을 이야기할 때 자주 사용되는 표현입니다." },
+        { main: "I get up early every day.", mean: "나는 매일 일찍 일어나요.", q_en: "Do you sleep late?", q_kr: "늦게 자니?", ex_en: "I get up at seven every day.", ex_kr: "나는 매일 7시에 일어나.", tip: "'get up'은 잠자리에서 '일어나다'라는 뜻이에요. 'wake up'(잠에서 깨다)과는 조금 다른 느낌이죠." },
+        { main: "I see flower in the early morning.", mean: "내가 아침 일찍 꽃을 보았어.", q_en: "When did you see it?", q_kr: "언제 봤어?", ex_en: "I see birds in the early morning.", ex_kr: "나는 아침 일찍 새들을 봐.", tip: "'early'는 '일찍', 'late'는 '늦게'라는 뜻의 반대말이에요. 'early morning'은 '이른 아침'을 의미하죠." },
+        { main: "Who is that guy?", mean: "저 사람은 누구야?", q_en: "He is my uncle.", q_kr: "우리 삼촌이야.", ex_en: "Who is that girl?", ex_kr: "저 여자는 누구야?", tip: "'guy'는 남자를 편하게 부르는 말이에요. 'man'보다 좀 더 구어적인(친구들끼리 쓰는) 느낌을 줘요." },
+        { main: "Where is your school?", mean: "너희 학교는 어디니?", q_en: "It's near here.", q_kr: "여기 근처에 있어.", ex_en: "Where is your bag?", ex_kr: "네 가방 어디 있니?", tip: "'Where'는 '어디?'라고 장소를 물어볼 때 사용해요. 'Where is...?' 뒤에 궁금한 장소나 물건을 넣어 질문해보세요." },
+        { main: "What is your favorite subject?", mean: "네가 가장 좋아하는 과목이 뭐야?", q_en: "I like Art.", q_kr: "나는 미술을 좋아해.", ex_en: "What is your favorite color?", ex_kr: "네가 좋아하는 색깔은 뭐야?", tip: "'favorite'은 '가장 좋아하는' 이라는 뜻이에요. 상대방의 취향을 물어볼 때 아주 좋은 단어랍니다." },
+        { main: "When do you go to your school?", mean: "너는 언제 학교에 가니?", q_en: "At eight o'clock.", q_kr: "8시에 가.", ex_en: "When do you sleep?", ex_kr: "너 언제 자니?", tip: "'When'은 '언제?'라고 시간을 물어볼 때 사용해요. 'at'은 특정 시간을 말할 때 (예: at 8 o'clock) 사용돼요." },
+        { main: "How much is this?", mean: "이거 얼마예요?", q_en: "It's one dollar.", q_kr: "1달러예요.", ex_en: "How much is the milk?", ex_kr: "우유가 얼마예요?", tip: "'How much?'는 가격을 물어볼 때 쓰는 필수 표현이에요. 가게에서 물건 값을 물어볼 때 자신감 있게 사용해보세요!" },
+        { main: "My brother sings very well.", mean: "내 형제는 노래를 매우 잘해.", q_en: "Is he a singer?", q_kr: "그는 가수니?", ex_en: "My sister dances very well.", ex_kr: "내 여동생은 춤을 아주 잘 춰.", tip: "'well'은 '잘'이라는 뜻으로, 무언가를 잘한다고 칭찬할 때 'good' 대신 사용할 수 있어요. 'sings good' 보다는 'sings well'이 더 자연스러운 표현이에요." },
+        { main: "He looks well.", mean: "그 남자는 좋아 보이네.", q_en: "Is he okay now?", q_kr: "그 사람 이제 괜찮아?", ex_en: "She looks happy.", ex_kr: "그녀는 행복해 보여.", tip: "여기서 'well'은 '건강이 좋은' 이라는 뜻이에요. 아팠던 사람이 괜찮아 보일 때 'He looks well.'이라고 말할 수 있어요." },
+        { main: "Please call the police.", mean: "경찰을 불러주세요.", q_en: "What happened?", q_kr: "무슨 일이에요?", ex_en: "Please call my mom.", ex_kr: "우리 엄마 좀 불러주세요.", tip: "'Please'를 문장 앞에 붙이면 '제발' 또는 '부디'라는 뜻이 더해져, 공손하게 부탁하는 표현이 돼요." },
+        { main: "Are you hungry now?", mean: "배가 고프니?", q_en: "Yes, a little.", q_kr: "네, 조금요.", ex_en: "Are you sleepy now?", ex_kr: "너 지금 졸리니?", tip: "'hungry'는 배고픈 상태, 'sleepy'는 졸린 상태를 말해요. 내 기분이나 상태를 표현하는 다양한 단어를 배워보세요." },
+        { main: "Give me some water.", mean: "물 좀 주세요.", q_en: "Here you are.", q_kr: "여기 있어요.", ex_en: "Give me some candy.", ex_kr: "사탕 좀 주세요.", tip: "'Give me'는 '~를 주세요'라는 요청 표현이에요. 'Please'를 붙여 'Please give me...'라고 하면 더 공손하게 말할 수 있어요." },
+        { main: "I watered the flowers.", mean: "나는 꽃에 물을 주었다.", q_en: "What did you do?", q_kr: "뭐 했어?", ex_en: "I watered the tree.", ex_kr: "나는 나무에 물을 주었어.", tip: "'water'는 '물'이라는 뜻도 있지만, 여기서는 '물을 주다'라는 행동으로 쓰였어요. 영어에서는 이렇게 하나의 단어가 다양하게 변신할 수 있어요!" },
+        { main: "He traveled around the world.", mean: "그는 전 세계를 여행해요.", q_en: "Does he like trips?", q_kr: "그는 여행을 좋아해?", ex_en: "She traveled to Jeju island.", ex_kr: "그녀는 제주도를 여행했어.", tip: "'around the world'는 '전 세계'라는 뜻의 멋진 표현이에요. 세계 지도를 보며 가고 싶은 나라를 영어로 말해보세요!" },
+        { main: "I don't know what to do.", mean: "내가 무엇을 해야 할지 모르겠어요.", q_en: "Are you bored?", q_kr: "심심하니?", ex_en: "I don't know what to eat.", ex_kr: "나는 뭘 먹어야 할지 모르겠어.", tip: "'what to do'(무엇을 할지), 'what to eat'(무엇을 먹을지) 처럼 '의문사 + to + 동사' 형태는 일상생활에서 아주 유용하게 쓰여요." },
+        { main: "I don't understand your saying.", mean: "당신의 말을 잘 이해하지 못하겠습니다.", q_en: "Do you know what I mean?", q_kr: "내 말 알겠니?", ex_en: "I don't understand this book.", ex_kr: "나는 이 책을 이해 못 하겠어.", tip: "'understand'는 '이해하다'라는 뜻이에요. 상대방의 말이 어려울 때 'I don't understand.'라고 솔직하게 말하는 것이 중요해요." },
+        { main: "Can you help me?", mean: "도와주실 수 있으세요?", q_en: "Sure, what's wrong?", q_kr: "물론이죠, 무슨 일이에요?", ex_en: "Can you show me?", ex_kr: "나한테 보여줄 수 있니?", tip: "도움이 필요할 때 쓸 수 있는 가장 기본적이고 중요한 표현이에요. 도움이 필요할 땐 언제나 자신있게 말해보세요." },
+        { main: "What’s up?", mean: "잘 지냈어? (안녕?)", q_en: "Hi! Not much.", q_kr: "안녕! 별일 없어.", ex_en: "What’s new?", ex_kr: "새로운 소식 있어?", tip: "'What’s up?'은 친구 사이에 '별일 없어?' 하고 가볍게 묻는 아주 흔한 인사예요. 'Nothing much.' (별일 없어) 라고 대답하는 것이 가장 자연스럽답니다!" },
+        { main: "Nothing much.", mean: "별거 없었어요.", q_en: "What’s up?", q_kr: "잘 지냈어?", ex_en: "Nothing special.", ex_kr: "특별한 일 없었어.", tip: "'What's up?'이라는 인사에 대한 가장 일반적인 대답이에요. '별일 없어'라는 뜻으로, 편하게 사용할 수 있어요." },
+        { main: "Studying math right now.", mean: "당장 수학 공부를 합시다.", q_en: "What are we doing?", q_kr: "우리 뭐 하는 거야?", ex_en: "Studying English right now.", ex_kr: "지금 당장 영어 공부를 하자.", tip: "'right now'는 '바로 지금'이라는 뜻으로, 지금 즉시 무언가를 하자는 강한 느낌을 줘요." },
+        { main: "Sounds boring.", mean: "지루해 보이네요.", q_en: "Do you want to study?", q_kr: "공부하고 싶어?", ex_en: "Sounds funny.", ex_kr: "웃기게 들리네 / 재미있겠다.", tip: "'Sounds...'는 '~하게 들린다'는 뜻으로, 어떤 제안이나 이야기에 대한 내 느낌을 표현할 때 써요. 'Sounds great!', 'Sounds fun!' 처럼 다양하게 활용해보세요." },
+        { main: "Are you studying for your test?", mean: "시험 때문에 공부하는 거니?", q_en: "Yes, I am.", q_kr: "네, 맞아요.", ex_en: "Are you waiting for your friend?", ex_kr: "친구 기다리는 중이니?", tip: "'Are you ~ing?'는 상대방이 지금 무엇을 하고 있는지 물어보는 표현이에요. 'be verb'와 '-ing'를 함께 쓰는 것이 포인트예요!" }
     ];
 
     let currentIndex = 0;
@@ -371,17 +381,7 @@
         { en: "Excellent, Jiho! Keep it up!", ko: "훌륭해, 지호야! 계속 지금처럼 해보자!" },
         { en: "You did it, Jiho! I'm so proud of you!", ko: "지호가 해냈구나! 정말 정말 자랑스러워!" },
         { en: "Wow! Jiho, your English is getting better!", ko: "와! 지호의 영어 실력이 쑥쑥 늘고 있어!" },
-        { en: "Fantastic work today, Jiho!", ko: "오늘 정말 환상적으로 잘했어, 지호야!" },
-        { en: "Jiho, you are an English genius!", ko: "지호야, 넌 정말 영어 천재인 것 같아!" },
-        { en: "Great job, Jiho! You are so smart!", ko: "잘했어, 지호야! 정말 똑똑하구나!" },
-        { en: "Perfect, Jiho! You are the best!", ko: "완벽해, 지호야! 네가 정말 최고야!" },
-        { en: "Way to go, Jiho! See you tomorrow!", ko: "멋지다, 지호야! 내일 또 만나자!" },
-        { en: "Wonderful, Jiho! You finished it!", ko: "멋져, 지호야! 끝까지 다 해냈구나!" },
-        { en: "Thumbs up, Jiho! You are doing great!", ko: "엄지 척, 지호야! 아주 잘하고 있어!" },
-        { en: "Cool, Jiho! You are a brave adventurer!", ko: "멋져, 지호야! 넌 용감한 모험가야!" },
-        { en: "Sweet! Jiho, you are a hard worker!", ko: "최고야! 지호는 정말 노력파구나!" },
-        { en: "Incredible, Jiho! You made it!", ko: "믿기지 않아, 지호야! 결국 해냈구나!" },
-        { en: "Good for you, Jiho! Happy learning!", ko: "잘됐구나, 지호야! 즐겁게 공부하자!" }
+        { en: "Fantastic work today, Jiho!", ko: "오늘 정말 환상적으로 잘했어, 지호야!" }
     ];
 
     function updateProgress() {
@@ -462,6 +462,15 @@
         document.getElementById('qa-kr').textContent = currentSentenceData.q_kr;
         document.getElementById('ex-en').textContent = currentSentenceData.ex_en;
         document.getElementById('ex-kr').textContent = currentSentenceData.ex_kr;
+        
+        const tipCard = document.getElementById('tip-card');
+        const tipText = document.getElementById('tip-text');
+        if (currentSentenceData.tip && currentSentenceData.tip.trim() !== '') {
+            tipText.textContent = currentSentenceData.tip;
+            tipCard.style.display = 'block';
+        } else {
+            tipCard.style.display = 'none';
+        }
     }
 
     function nextSentence() {
@@ -556,16 +565,19 @@
         const container = document.querySelector('.container');
         const body = document.querySelector('body');
         const toggleBtn = document.getElementById('mode-toggle');
+        const historyBox = document.querySelector('.history-box');
         
         mode = (mode === 'desktop') ? 'mobile' : 'desktop';
         
         if (mode === 'mobile') {
             container.classList.add('mobile-view');
             body.classList.add('mobile-view');
+            historyBox.classList.add('mobile-view');
             toggleBtn.textContent = '🖥️ 데스크탑';
         } else {
             container.classList.remove('mobile-view');
             body.classList.remove('mobile-view');
+            historyBox.classList.remove('mobile-view');
             toggleBtn.textContent = '📱 모바일';
         }
         localStorage.setItem('eng_mode', mode);
@@ -587,6 +599,7 @@
         if(mode === 'mobile') {
             document.querySelector('.container').classList.add('mobile-view');
             document.querySelector('body').classList.add('mobile-view');
+            document.querySelector('.history-box').classList.add('mobile-view');
             document.getElementById('mode-toggle').textContent = '🖥️ 데스크탑';
         }
     }
