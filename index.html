@@ -61,7 +61,7 @@
         .status-bar, .bottom-section { grid-column: 1 / -1; }
         .main-panel { gap: 10px; }
         .side-panel { gap: 10px; justify-content: center; }
-        .bottom-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .bottom-section { display: grid; grid-template-columns: 1fr; gap: 15px; }
 
         /* 4. 컴포넌트별 스타일 */
 
@@ -139,16 +139,9 @@
         .mini-speaker { position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 1.1rem; background: none; border: none; }
 
         /* 하단 영역 */
-        .practice-box, .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .practice-box h3 { margin: 0 0 5px 0; color: var(--text-sub); font-size: 1rem; }
-        .mic-btn { font-size: 1.5rem; background: var(--highlight); color: white; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; margin-bottom: 5px; }
-        .mic-btn.listening { animation: pulse 1s infinite; }
-        .input-display { width: calc(100% - 20px); padding: 8px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 1rem; text-align: center; }
-        .feedback-msg { font-size: 0.9rem; margin-top: 5px; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(253, 121, 168, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(253, 121, 168, 0); } 100% { box-shadow: 0 0 0 0 rgba(253, 121, 168, 0); } }
+        .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-y: auto; }
 
         /* 기록 영역 */
-        .history-box { overflow-y: auto; }
         .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 5px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .reset-btn { font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
         .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
@@ -240,13 +233,6 @@
     </div>
 
     <div class="bottom-section">
-        <div class="practice-box card">
-            <h3>🎤 문장 말하기 연습</h3>
-            <button class="mic-btn" id="mic-btn" onclick="startListening()">🎤</button>
-            <input type="text" id="user-input" class="input-display" placeholder="마이크를 클릭하세요" readonly>
-            <div class="feedback-msg" id="feedback-msg"></div>
-        </div>
-
         <div class="history-box card">
             <h3>
                <span>📅 학습 기록</span>
@@ -476,8 +462,6 @@
         document.getElementById('qa-kr').textContent = currentSentenceData.q_kr;
         document.getElementById('ex-en').textContent = currentSentenceData.ex_en;
         document.getElementById('ex-kr').textContent = currentSentenceData.ex_kr;
-        document.getElementById('user-input').value = '';
-        document.getElementById('feedback-msg').textContent = '';
     }
 
     function nextSentence() {
@@ -488,22 +472,6 @@
         if (currentIndex > 0) { currentIndex--; updateUI(); }
     }
     function speakMainSentence(rate) { speakText(currentSentenceData.main, rate); }
-
-    function startListening() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) { alert("크롬 브라우저를 사용해주세요."); return; }
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
-        const micBtn = document.getElementById('mic-btn');
-        recognition.onstart = () => { micBtn.classList.add('listening'); };
-        recognition.onend = () => { micBtn.classList.remove('listening'); };
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            document.getElementById('user-input').value = transcript;
-            document.getElementById('feedback-msg').textContent = "잘 들었습니다! 👍";
-        };
-        recognition.start();
-    }
 
     function addHistory(text, index) {
         const list = document.getElementById('history-list');
