@@ -115,7 +115,7 @@
         /* 메인 패널 */
         .header-nav { display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .day-counter { font-size: 1rem; font-weight: bold; color: var(--primary-color); }
-        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 20px 0; line-height: 1.4; }
+        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 20px 0; line-height: 1.4; flex-grow: 1; display: flex; align-items: center; justify-content: center;}
         .clickable-word { cursor: pointer; padding: 2px 4px; border-radius: 4px; display: inline-block; transition: 0.2s; }
         .clickable-word:hover { background-color: var(--border-light); color: var(--primary-color); transform: scale(1.05); }
         .sentence-meaning { text-align: center; color: var(--text-sub); font-size: 1.1rem; margin-bottom: 10px; }
@@ -125,7 +125,7 @@
         .audio-btn:hover { background: var(--primary-color); color: white; }
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
         .audio-btn.slow:hover { background: var(--highlight); color: white; }
-        .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: auto; box-shadow: 0 4px 0 #009174; }
+        .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #009174; }
 
         /* 사이드 패널 */
         .sub-card {
@@ -150,6 +150,8 @@
 
         /* 기록 영역 */
         .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 8px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
+        .history-box h3 div { display: flex; gap: 5px; }
+        .review-btn { font-size: 10px; background: var(--primary-color); color: white; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
         .reset-btn { font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
         .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
         .history-item-main { flex-grow: 1; cursor: pointer; }
@@ -165,6 +167,17 @@
         .praise-title { font-size: 1.5rem; color: var(--primary-color); font-weight: bold; margin-bottom: 10px; }
         .praise-subtitle { font-size: 1.1rem; color: #555; }
         .praise-confirm-btn { background: var(--primary-color); color: white; border: none; padding: 10px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 0 #4b3eb1; }
+
+        /* 복습 모달 */
+        #review-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
+        .review-card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; }
+        .review-card h2 { margin: 0; color: var(--primary-color); }
+        .review-instruction { font-size: 0.9rem; color: var(--text-sub); }
+        .review-meaning { font-size: 1.3rem; font-weight: bold; color: var(--text-main); min-height: 50px; }
+        .review-sentence { font-size: 1.2rem; color: var(--success); font-weight: bold; min-height: 40px; line-height: 1.4;}
+        .review-actions button { background: var(--secondary-color); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: bold; }
+        #next-review-btn { background: var(--success); }
+        .close-review-btn { background: none; color: var(--text-sub); border: 1px solid var(--border-light); padding: 8px 15px; margin-top: 10px; }
 
         /* 관리자 모드 */
         #admin-btn { position: fixed; bottom: 10px; right: 10px; background: #333; color: white; font-size: 12px; padding: 5px 10px; border-radius: 5px; cursor: pointer; z-index: 1001; opacity: 0.7; }
@@ -250,7 +263,10 @@
         <div class="history-box card">
             <h3>
                <span>📅 학습 기록</span>
-               <button class="reset-btn" onclick="resetData()">점수 지우기</button>
+               <div>
+                   <button class="review-btn" onclick="startReview()">🔁 복습하기</button>
+                   <button class="reset-btn" onclick="resetData()">기록 지우기</button>
+               </div>
             </h3>
             <div id="history-list"></div>
         </div>
@@ -261,6 +277,20 @@
     <span class="thumbs-up">👍</span>
     <div class="praise-text"></div>
     <button class="praise-confirm-btn" onclick="closePraise()">확인했어요!</button>
+</div>
+
+<div id="review-modal">
+    <div class="review-card">
+        <h2>🔁 복습하기</h2>
+        <p class="review-instruction">아래 뜻을 보고 영어 문장을 떠올려보세요!</p>
+        <div class="review-meaning"></div>
+        <div class="review-sentence" style="display: none;"></div>
+        <div class="review-actions">
+            <button id="show-answer-btn" onclick="showReviewAnswer()">🧐 정답 확인</button>
+            <button id="next-review-btn" onclick="nextReviewSentence()" style="display: none;">다음 문장 ➡️</button>
+        </div>
+        <button class="close-review-btn" onclick="endReview()">학습으로 돌아가기</button>
+    </div>
 </div>
 
 <div id="admin-btn" onclick="openAdminModal()">관리자</div>
@@ -293,7 +323,7 @@
         { main: "You are good at game.", mean: "너는 게임을 잘 하는구나.", q_en: "Am I good?", q_kr: "나 잘해?", ex_en: "You are good at soccer.", ex_kr: "너는 축구를 잘 하는구나.", tip: "'be good at ~'은 '~를 잘한다'는 뜻의 아주 유용한 표현이에요. 내가 잘하는 것을 영어로 말해보세요!" },
         { main: "You are very kind.", mean: "너는 참 착하구나.", q_en: "Can I help you?", q_kr: "내가 도와줄까?", ex_en: "You are very smart.", ex_kr: "너는 참 똑똑하구나.", tip: "'kind', 'smart' 처럼 다른 사람의 성격을 칭찬하는 단어들을 알아두면 친구와 더 사이좋게 지낼 수 있어요." },
         { main: "You are the best!", mean: "너는 최고야!", q_en: "Did I win?", q_kr: "내가 이겼어?", ex_en: "You are the winner!", ex_kr: "네가 승자야!", tip: "'the best'는 '최고'라는 뜻의 가장 강력한 칭찬이에요! 친구나 가족에게 힘을 주고 싶을 때 사용해보세요." },
-        { main: "I like swimming.", mean: "나는 수영을 좋아해요.", q_en: "What is your hobby?", q_kr: "취미가 뭐야?", ex_en: "I like skating.", ex_kr: "나는 스케이트 타는 걸 좋아해.", tip: "'like' 뒤에 행동을 나타내는 단어를 붙일 때는 '-ing'를 붙여요. (예: swim -> swimming, read -> reading)" },
+        { main: "I like swimming.", mean: "나는 수영을 좋아해요.", q_en: "What is your hobby?", q_kr: "취미가 뭐야?", ex_en: "I like skating.", ex_kr: "나는 스케이트 타는 걸 좋아해.", tip: "'like' 뒤에 행동를 나타내는 단어를 붙일 때는 '-ing'를 붙여요. (예: swim -> swimming, read -> reading)" },
         { main: "She likes writing.", mean: "그녀는 쓰는 것을 좋아해요.", q_en: "Does she like books?", q_kr: "그녀는 책을 좋아해?", ex_en: "She likes painting.", ex_kr: "그녀는 그림 그리는 걸 좋아해.", tip: "주어가 '나(I)'나 '너(You)'가 아닌 다른 한 명일 때는 'like' 대신 'likes'를 사용해요." },
         { main: "He likes driving.", mean: "그는 운전하는 것을 좋아해요.", q_en: "Does he have a car?", q_kr: "그는 차가 있어?", ex_en: "He likes fishing.", ex_kr: "그는 낚시하는 걸 좋아해.", tip: "남자 한 명을 가리키는 'He' 역시 'likes'를 사용해요. 'She'와 'He'를 잘 구별해서 사용해보세요." },
         { main: "My dog likes running.", mean: "내 개는 뛰는 것을 좋아해요.", q_en: "Is your dog active?", q_kr: "네 강아지는 활동적이니?", ex_en: "My cat likes jumping.", ex_kr: "내 고양이는 점프하는 걸 좋아해.", tip: "동물이나 사물 하나를 말할 때도 'likes'를 쓸 수 있어요. 예를 들어 'My robot likes dancing.' 처럼요!" },
@@ -372,6 +402,10 @@
     let currentSentenceData = sentences[0];
     let selectedVoice = localStorage.getItem('eng_voice') || 'Google US English';
     let mode = localStorage.getItem('eng_mode') || 'desktop';
+    
+    let history = [];
+    let reviewQueue = [];
+    let currentReviewIndex = 0;
 
     const levels = [
         "🌱 영어모험가 지호", "🐥 대단한 영어병아리", "🐰 영리한 영어토끼", "🦊 지혜로운 영어여우", "🦄 신비한 유니콘", 
@@ -486,21 +520,51 @@
     }
     function speakMainSentence(rate) { speakText(currentSentenceData.main, rate); }
 
-    function addHistory(text, index) {
+    function renderHistory() {
         const list = document.getElementById('history-list');
-        const now = new Date();
-        const timeStr = `${now.getMonth() + 1}/${now.getDate()} ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+        list.innerHTML = ''; 
+        history.forEach(item => {
+            const itemEl = createHistoryItemElement(item);
+            list.appendChild(itemEl);
+        });
+        document.querySelector('.review-btn').style.display = history.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function createHistoryItemElement(item) {
+        const date = new Date(item.timestamp);
+        const timeStr = `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
         
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `
-            <div class="history-item-main" onclick="goToSentence(${index})">
+        const itemEl = document.createElement('div');
+        itemEl.className = 'history-item';
+        itemEl.innerHTML = `
+            <div class="history-item-main" onclick="goToSentence(${item.index})">
                 <span class="history-item-timestamp">[${timeStr}]</span>
-                <span class="history-item-text">${text}</span>
+                <span class="history-item-text">${item.text}</span>
             </div>
-            <button class="del-btn" onclick="event.stopPropagation(); this.parentElement.remove()">X</button>
+            <button class="del-btn" onclick="deleteHistoryItem(event, '${item.timestamp}')">X</button>
         `;
-        list.insertBefore(item, list.firstChild);
+        return itemEl;
+    }
+
+    function deleteHistoryItem(event, timestamp) {
+        event.stopPropagation();
+        history = history.filter(item => item.timestamp !== timestamp);
+        localStorage.setItem('eng_history', JSON.stringify(history));
+        renderHistory();
+    }
+
+    function addHistory(sentenceIndex) {
+        if (history.some(item => item.index === sentenceIndex)) return; 
+
+        const newItem = {
+            index: sentenceIndex,
+            text: sentences[sentenceIndex].main,
+            timestamp: new Date().toISOString()
+        };
+
+        history.unshift(newItem); 
+        localStorage.setItem('eng_history', JSON.stringify(history));
+        renderHistory();
     }
 
     function completeLearning() {
@@ -519,12 +583,7 @@
         }
 
         const currentLessonNumber = currentIndex + 1;
-        let earnedPoints;
-        if (currentLessonNumber >= 41 && currentLessonNumber <= 80) {
-            earnedPoints = 2;
-        } else {
-            earnedPoints = 1;
-        }
+        let earnedPoints = (currentLessonNumber >= 41 && currentLessonNumber <= 80) ? 2 : 1;
 
         exp += earnedPoints;
         completedToday.push(currentIndex);
@@ -544,8 +603,63 @@
 
         checkStreak();
         updateProgress();
-        
-        addHistory(`${currentSentenceData.main} (+${earnedPoints}XP)`, currentIndex);
+        addHistory(currentIndex);
+    }
+    
+    function startReview() {
+        if (history.length === 0) {
+            alert("아직 학습 기록이 없어요. 문장을 먼저 학습해주세요! 😊");
+            return;
+        }
+        reviewQueue = history.map(item => item.index);
+        for (let i = reviewQueue.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
+        }
+        currentReviewIndex = 0;
+        document.getElementById('review-modal').style.display = 'flex';
+        showNextReviewSentence();
+    }
+
+    function showNextReviewSentence() {
+        if (currentReviewIndex >= reviewQueue.length) {
+            alert("🎉 모든 복습을 완료했어요! 정말 대단해요!");
+            endReview();
+            return;
+        }
+        const sentenceIndex = reviewQueue[currentReviewIndex];
+        const sentenceData = sentences[sentenceIndex];
+        document.querySelector('.review-meaning').textContent = sentenceData.mean;
+        const sentenceEl = document.querySelector('.review-sentence');
+        sentenceEl.textContent = sentenceData.main;
+        sentenceEl.style.display = 'none';
+        document.getElementById('show-answer-btn').style.display = 'inline-block';
+        document.getElementById('next-review-btn').style.display = 'none';
+    }
+
+    function showReviewAnswer() {
+        document.querySelector('.review-sentence').style.display = 'block';
+        document.getElementById('show-answer-btn').style.display = 'none';
+        document.getElementById('next-review-btn').style.display = 'inline-block';
+    }
+
+    function nextReviewSentence() {
+        currentReviewIndex++;
+        showNextReviewSentence();
+    }
+
+    function endReview() {
+        document.getElementById('review-modal').style.display = 'none';
+        reviewQueue = [];
+        currentReviewIndex = 0;
+    }
+
+    function loadHistory() {
+        const savedHistory = localStorage.getItem('eng_history');
+        if (savedHistory) {
+            history = JSON.parse(savedHistory);
+        }
+        renderHistory();
     }
 
     function showLevelInfo() { alert(levels.map((l, i) => `Lv.${i+1}: ${l}`).join('\n')); }
@@ -590,7 +704,8 @@
     function initApp() {
         updateUI(); 
         updateProgress(); 
-        checkStreak(); 
+        checkStreak();
+        loadHistory(); 
         
         if (speechSynthesis.onvoiceschanged !== undefined) {
             speechSynthesis.onvoiceschanged = populateVoiceList;
