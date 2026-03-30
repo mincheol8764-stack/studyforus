@@ -43,10 +43,10 @@
         .container {
             max-width: 1000px;
             width: 100%;
-            height: 95vh;
+            /* height: 95vh; */ /* <- REMOVED to allow container to shrink */
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            grid-template-rows: auto 1fr auto;
+            grid-template-rows: auto auto auto;
             gap: 12px;
         }
 
@@ -64,9 +64,8 @@
             grid-row: 2;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 수직 중앙 정렬을 위해 추가 */
         }
-        .side-panel { gap: 10px; justify-content: flex-start; grid-row: 2; overflow-y: auto;}
+        .side-panel { gap: 10px; justify-content: flex-start; grid-row: 2; overflow-y: auto; max-height: 45vh;}
         .bottom-section { grid-row: 3; display: grid; grid-template-columns: 1fr; gap: 15px; }
 
         /* 4. 컴포넌트별 스타일 */
@@ -116,7 +115,7 @@
         /* 메인 패널 */
         .header-nav { display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .day-counter { font-size: 1rem; font-weight: bold; color: var(--primary-color); }
-        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 20px 0; line-height: 1.4; display: flex; align-items: center; justify-content: center; min-height: 120px;}
+        .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 10px 0; line-height: 1.4; display: flex; align-items: center; justify-content: center; min-height: 70px;}
         .clickable-word { cursor: pointer; padding: 2px 4px; border-radius: 4px; display: inline-block; transition: 0.2s; }
         .clickable-word:hover { background-color: var(--border-light); color: var(--primary-color); transform: scale(1.05); }
         .sentence-meaning { text-align: center; color: var(--text-sub); font-size: 1.1rem; margin-bottom: 10px; }
@@ -126,7 +125,7 @@
         .audio-btn:hover { background: var(--primary-color); color: white; }
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
         .audio-btn.slow:hover { background: var(--highlight); color: white; }
-        .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 0 #009174; }
+        .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #009174; }
 
         /* 사이드 패널 */
         .sub-card {
@@ -192,7 +191,7 @@
         /* 모바일 뷰 */
         body.mobile-view { height: auto; overflow-y: auto; }
         .container.mobile-view { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; overflow-y: auto; }
-        .container.mobile-view .side-panel { overflow-y: visible; }
+        .container.mobile-view .side-panel { overflow-y: visible; max-height: none; }
         .container.mobile-view .bottom-section { grid-template-columns: 1fr; height: auto; }
         .history-box.mobile-view { max-height: 40vh; }
     </style>
