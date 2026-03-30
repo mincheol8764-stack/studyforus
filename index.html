@@ -425,8 +425,8 @@
     const levels = [
         "🌱 영어모험가 지호", "🐥 대단한 영어병아리", "🐰 영리한 영어토끼", "🦊 지혜로운 영어여우", "🦄 신비한 유니콘", 
         "🦁 용감한 영어사자", "💎 영어보석 지호", "👑 영어의 왕자", "🧙 영어 대마법사", "🐉 전설의 드래곤",
-        "⚾️ 지호의 강속구", "⚽️ 지호의 황금발", "🦋 춤추는 나비, 지호", "🧢 미래의 야구모자, 지호", "🥅 무적의 골키퍼, 지호",
-        "🐞 행운의 무당벌레, 지호", "🏆 지호의 홈런왕", "🌟 필드의 지배자, 지호", "🦗 노래하는 귀뚜라미, 지호", "👑 챔피언 지호"
+        "⚾️ 전설의 드래곤을 쓰러뜨린 강속구", "⚽️ 축구의 신, 유지호", "🦋 나비처럼 날으는 지호", "🐞 숲속의 지배자, 헤라클레스", "🏆 승리를 부르는 만루홈런",
+        "🥅 은하계 대표 골키퍼", "🦗 황금빛 사슴벌레의 맹세", "🌟 불꽃슛의 마스터, 지호", "🚀 우주를 향한 홈런", "👑 정복자, 캡틴 지호"
     ];
 
     const praises = [
@@ -624,7 +624,8 @@
         addHistory(`${currentData.main} (+${earnedPoints}XP)${bonusText}`, currentIndex);
     }
 
-    function showLevelInfo() { alert(levels.map((l, i) => `Lv.${i+1}: ${l}`).join('\n')); }
+    function showLevelInfo() { alert(levels.map((l, i) => `Lv.${i+1}: ${l}`).join('
+')); }
     function showStreakHistory() { alert(`🔥 현재 ${streak}일 연속 학습 중!`); }
 
     function populateVoiceList() {
