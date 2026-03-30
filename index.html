@@ -489,7 +489,7 @@
             const span = document.createElement('span');
             span.textContent = word + ' ';
             span.className = 'clickable-word';
-            span.onclick = () => playText(word.replace(/[.,!?]/g, ''));
+            span.onclick = () => playText(word.replace(/[.,!?]/g, ''), 0.9);
             sentenceContainer.appendChild(span);
         });
         document.getElementById('main-meaning').textContent = currentData.mean;
