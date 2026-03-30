@@ -67,21 +67,33 @@
 
         /* 상태바 */
         .status-bar {
+            flex-direction: row; /* Fix: 가로 정렬 유지 */
+            justify-content: space-between;
+            align-items: center;
+        }
+        .streak-zone { display: flex; align-items: center; cursor: pointer; flex-direction: row; }
+        #streak-count { font-weight: bold; font-size: 0.9rem; margin-left: 5px; }
+        .level-zone { flex-grow: 1; margin: 0 20px; }
+        
+        .level-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            border-radius: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            background: white;
+            margin-bottom: 3px;
         }
-        .streak-zone { display: flex; align-items: center; cursor: pointer; }
-        #streak-count { font-weight: bold; font-size: 0.9rem; }
-        .level-zone { flex-grow: 1; margin: 0 20px; }
-        .level-tag { font-weight: bold; color: var(--primary-color); font-size: 0.85rem; margin-bottom: 3px; display: block; cursor:pointer; }
+        .level-tag { 
+            font-weight: bold; 
+            color: var(--primary-color); 
+            font-size: 0.85rem; 
+            cursor:pointer; 
+        }
         .progress-bg { background: #eee; border-radius: 10px; height: 10px; width: 100%; }
         .progress-fill { background: linear-gradient(90deg, #6C5CE7, #A29BFE); height: 100%; border-radius: 10px; width: 0%; transition: width 0.5s; }
-        #score-text { font-size: 0.8rem; color: var(--text-sub); font-weight: bold; float: right; }
+        #score-text { 
+            font-size: 0.8rem; 
+            color: var(--text-sub); 
+            font-weight: bold; 
+        }
 
         /* 버튼 */
         .nav-btn {
@@ -96,15 +108,15 @@
         .nav-btn.record-btn { padding: 2px 5px; font-size: 10px; margin-left: 5px; }
 
         /* 메인 패널 */
-        .header-nav { display: flex; justify-content: space-between; align-items: center; }
+        .header-nav { display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .day-counter { font-size: 1rem; font-weight: bold; color: var(--primary-color); }
         .sentence-display { font-size: 1.7rem; font-weight: 800; text-align: center; margin: 10px 0; line-height: 1.3; }
         .clickable-word { cursor: pointer; padding: 2px 4px; border-radius: 4px; display: inline-block; transition: 0.2s; }
         .clickable-word:hover { background-color: var(--border-light); color: var(--primary-color); transform: scale(1.05); }
         .sentence-meaning { text-align: center; color: var(--text-sub); font-size: 1.1rem; margin-bottom: 5px; }
         .word-click-info { text-align: center; color:var(--text-sub); font-size:0.8rem; margin-bottom:5px; }
-        .audio-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; }
-        .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        .audio-controls { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; flex-direction: row; }
+        .audio-btn { background: white; border: 2px solid var(--primary-color); color: var(--primary-color); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; flex-direction: row; }
         .audio-btn:hover { background: var(--primary-color); color: white; }
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
         .audio-btn.slow:hover { background: var(--highlight); color: white; }
@@ -137,9 +149,9 @@
 
         /* 기록 영역 */
         .history-box { overflow-y: auto; }
-        .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 5px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center;}
+        .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 5px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .reset-btn { font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
-        .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; font-size: 0.85rem; }
+        .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
         .history-item-main { flex-grow: 1; cursor: pointer; }
         .history-item-timestamp { font-size:0.7rem; color:#999; }
         .history-item-text { color:var(--primary-color); margin-left:5px; text-decoration: underline; }
@@ -179,8 +191,10 @@
             <button class="nav-btn record-btn">기록</button>
         </div>
         <div class="level-zone">
-            <span class="level-tag" id="level-name" onclick="showLevelInfo()">🌱 초보 모험가 (Lv.1) ⓘ</span>
-            <span id="score-text">0 / 50 XP</span>
+            <div class="level-info">
+                <span class="level-tag" id="level-name" onclick="showLevelInfo()">🌱 초보 모험가 (Lv.1) ⓘ</span>
+                <span id="score-text">0 / 50 XP</span>
+            </div>
             <div class="progress-bg"><div id="progress-fill" class="progress-fill"></div></div>
         </div>
         <button id="mode-toggle" class="nav-btn">📱 모바일</button>
@@ -226,14 +240,14 @@
     </div>
 
     <div class="bottom-section">
-        <div class="practice-box">
+        <div class="practice-box card">
             <h3>🎤 문장 말하기 연습</h3>
             <button class="mic-btn" id="mic-btn" onclick="startListening()">🎤</button>
             <input type="text" id="user-input" class="input-display" placeholder="마이크를 클릭하세요" readonly>
             <div class="feedback-msg" id="feedback-msg"></div>
         </div>
 
-        <div class="history-box">
+        <div class="history-box card">
             <h3>
                <span>📅 학습 기록</span>
                <button class="reset-btn" onclick="resetData()">점수 지우기</button>
