@@ -397,8 +397,6 @@
         { en: "Incredible, Jiho! You made it!", ko: "믿기지 않아, 지호야! 결국 해냈구나!" },
         { en: "Good for you, Jiho! Happy learning!", ko: "잘됐구나, 지호야! 즐겁게 공부하자!" }
     ];
-    
-    const ADVANCED_SENTENCE_THRESHOLD = 41;
 
     function updateProgress() {
         function getTargetPoints(lv) {
@@ -526,7 +524,6 @@
 
     function completeLearning() {
         let completedToday = JSON.parse(localStorage.getItem('eng_completed_today') || "[]");
-        let everCompleted = JSON.parse(localStorage.getItem('eng_ever_completed') || "[]");
         const today = new Date().toDateString();
         const lastLearnDate = localStorage.getItem('eng_last_learn_date');
 
@@ -540,17 +537,19 @@
             return;
         }
 
-        const isFirstTime = !everCompleted.includes(currentIndex);
-        const isAdvanced = (currentIndex + 1 >= ADVANCED_SENTENCE_THRESHOLD);
-        let earnedPoints = isAdvanced ? (isFirstTime ? 5 : 2) : 1;
+        const currentLessonNumber = currentIndex + 1;
+        let earnedPoints;
+        if (currentLessonNumber >= 41 && currentLessonNumber <= 80) {
+            earnedPoints = 2;
+        } else {
+            earnedPoints = 1;
+        }
 
         exp += earnedPoints;
         completedToday.push(currentIndex);
-        if (isFirstTime) everCompleted.push(currentIndex);
         
         localStorage.setItem('eng_completed_today', JSON.stringify(completedToday));
-        localStorage.setItem('eng_ever_completed', JSON.stringify(everCompleted));
-
+        
         const banner = document.getElementById('praise-banner');
         const randomPraise = praises[Math.floor(Math.random() * praises.length)];
         
@@ -565,8 +564,7 @@
         checkStreak();
         updateProgress();
         
-        const bonusText = isAdvanced && !isFirstTime ? " (복습보너스)" : "";
-        addHistory(`${currentSentenceData.main} (+${earnedPoints}XP)${bonusText}`, currentIndex);
+        addHistory(`${currentSentenceData.main} (+${earnedPoints}XP)`, currentIndex);
     }
 
     function showLevelInfo() { alert(levels.map((l, i) => `Lv.${i+1}: ${l}`).join('\n')); }
