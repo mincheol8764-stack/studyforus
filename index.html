@@ -433,7 +433,7 @@
         { main: "I need to go home now.", mean: "나 이제 집에 가야 해.", q_en: "See you tomorrow!", q_kr: "내일 봐!", ex_en: "I need to go to sleep now.", ex_kr: "나 이제 자러 가야 해.", tip: "'need to'는 '~해야 한다'는 필요성을 나타내요. 'have to'보다는 조금 부드러운 느낌이지만, 꼭 해야 하는 일에 사용해요." }
     ];
 
-    let currentIndex = 0;
+    let currentIndex = parseInt(localStorage.getItem('eng_currentIndex')) || 0;
     let exp = parseInt(localStorage.getItem('eng_exp')) || 0;
     let streak = parseInt(localStorage.getItem('eng_streak')) || 0;
     let lastDate = localStorage.getItem('eng_lastDate') || "";
@@ -521,6 +521,7 @@
     }
 
     function updateUI() {
+        localStorage.setItem('eng_currentIndex', currentIndex);
         currentSentenceData = sentences[currentIndex];
         document.getElementById('current-idx').textContent = currentIndex + 1;
         document.getElementById('total-count').textContent = sentences.length;
