@@ -139,7 +139,7 @@
         .sub-card:last-child { margin-bottom: 0; }
         .sub-card h3 { margin: 0 0 8px 0; font-size: 0.9rem; color: var(--text-sub); display: flex; align-items: center; gap: 6px;}
         .sub-en { font-size: 1rem; font-weight: bold; color: var(--text-main); margin-bottom: 3px; }
-        .sub-kr { font-size: 0.9rem; color: var(--text-sub); line-height: 1.5;}
+        .sub-kr { font-size: 0.9rem; color: var(--text-sub); line-height: 1.5; }
         .sub-card.qa-card { border-left-color: #fab1a0; }
         .sub-card.ex-card { border-left-color: #74b9ff; }
         .sub-card.tip-card { border-left-color: var(--tip-color); }
@@ -275,7 +275,6 @@
                <span>📅 학습 기록</span>
                <div>
                    <button class="review-btn" onclick="startReview()">🔁 복습하기</button>
-                   <button class="reset-btn" onclick="resetData()">기록 지우기</button>
                </div>
             </h3>
             <div id="history-list"></div>
@@ -326,6 +325,7 @@
     <div class="admin-actions">
         <button onclick="saveAdminData()">저장</button>
         <button onclick="closeAdminModal()">닫기</button>
+        <button class="reset-btn" onclick="resetData()">기록 지우기</button>
     </div>
 </div>
 
@@ -723,7 +723,17 @@
     function loadHistory() {
         const savedHistory = localStorage.getItem('eng_history');
         if (savedHistory) {
-            history = JSON.parse(savedHistory);
+            try {
+                const parsedHistory = JSON.parse(savedHistory);
+                if (Array.isArray(parsedHistory)) {
+                    history = parsedHistory;
+                } else {
+                    history = []; 
+                }
+            } catch (e) {
+                console.error("Error parsing history from localStorage", e);
+                history = [];
+            }
         }
         renderHistory();
     }
