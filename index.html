@@ -21,6 +21,7 @@
             --text-sub: #636E72;
             --highlight: #FD79A8;
             --success: #00B894;
+            --danger-color: #ff7675;
             --border-light: #dfe6e9;
             --tip-color: #feca57;
         }
@@ -43,7 +44,6 @@
         .container {
             max-width: 1000px;
             width: 100%;
-            /* height: 95vh; */ /* <- REMOVED to allow container to shrink */
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
             grid-template-rows: auto auto auto;
@@ -60,11 +60,7 @@
         }
 
         .status-bar, .bottom-section { grid-column: 1 / -1; }
-        .main-panel { 
-            grid-row: 2;
-            display: flex;
-            flex-direction: column;
-        }
+        .main-panel { grid-row: 2; display: flex; flex-direction: column; }
         .side-panel { gap: 10px; justify-content: flex-start; grid-row: 2; overflow-y: auto; max-height: 45vh;}
         .bottom-section { grid-row: 3; display: grid; grid-template-columns: 1fr; gap: 15px; }
 
@@ -86,21 +82,22 @@
             align-items: center;
             margin-bottom: 3px;
         }
-        .level-tag { 
-            font-weight: bold; 
-            color: var(--primary-color); 
-            font-size: 0.85rem; 
-            cursor:pointer; 
-        }
+        .level-tag { font-weight: bold; color: var(--primary-color); font-size: 0.85rem; cursor:pointer; }
         .progress-bg { background: #eee; border-radius: 10px; height: 10px; width: 100%; }
         .progress-fill { background: linear-gradient(90deg, #6C5CE7, #A29BFE); height: 100%; border-radius: 10px; width: 0%; transition: width 0.5s; }
-        #score-text { 
-            font-size: 0.8rem; 
-            color: var(--text-sub); 
-            font-weight: bold; 
+        #score-text { font-size: 0.8rem; color: var(--text-sub); font-weight: bold; }
+
+        /* 버튼 (개선됨) */
+        .nav-btn, .audio-btn, .complete-btn, .praise-confirm-btn, .review-actions button, .close-review-btn, .close-list-btn, .admin-actions button, .del-btn, .review-btn {
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+            -webkit-tap-highlight-color: transparent; /* 모바일 클릭 효과 제거 */
         }
 
-        /* 버튼 */
+        .nav-btn:active, .audio-btn:active, .complete-btn:active, .praise-confirm-btn:active, .review-actions button:active, .close-review-btn:active, .close-list-btn:active, .admin-actions button:active, .del-btn:active, .review-btn:active {
+            transform: translateY(2px);
+            box-shadow: none !important; 
+        }
+
         .nav-btn {
             background: var(--secondary-color);
             border: none;
@@ -110,7 +107,7 @@
             cursor: pointer;
             font-size: 13px;
         }
-        .nav-btn.record-btn { padding: 2px 5px; font-size: 10px; margin-left: 5px; }
+        .nav-btn.record-btn { padding: 2px 8px; font-size: 12px; margin-left: 5px; }
 
         /* 메인 패널 */
         .header-nav { display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
@@ -126,6 +123,7 @@
         .audio-btn.slow { border-color: var(--highlight); color: var(--highlight); }
         .audio-btn.slow:hover { background: var(--highlight); color: white; }
         .complete-btn { width: 100%; background: var(--success); color: white; border: none; padding: 12px; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 0 #009174; }
+        .complete-btn:active { box-shadow: 0 2px 0 #009174 !important; }
 
         /* 사이드 패널 */
         .sub-card {
@@ -151,22 +149,29 @@
         /* 기록 영역 */
         .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 8px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .history-box h3 div { display: flex; gap: 5px; }
-        .review-btn { font-size: 10px; background: var(--primary-color); color: white; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
-        .reset-btn { font-size: 10px; background: #eee; border: none; cursor: pointer; border-radius: 4px; padding: 3px 6px;}
+        .review-btn { font-size: 12px; background: var(--primary-color); color: white; border: none; cursor: pointer; border-radius: 4px; padding: 3px 8px; }
         .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
         .history-item-main { flex-grow: 1; cursor: pointer; }
         .history-item-timestamp { font-size:0.7rem; color:#999; margin-right: 8px; }
         .history-item-text { color:var(--primary-color); text-decoration: underline; }
-        .del-btn { background: #ff7675; color: white; border: none; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.7rem; }
-
-        /* 칭찬 배너 */
-        #praise-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; z-index: 1000; transition: 0.5s; border: 4px solid var(--primary-color); }
-        #praise-banner.show { transform: translate(-50%, -50%) scale(1); }
-        .thumbs-up { font-size: 4rem; display: block; }
+        .del-btn { background: none; border: none; color: var(--danger-color); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
+        .del-btn:hover { background-color: #ffdddd; }
+        
+        /* 칭찬 배너 (개선됨) */
+        @keyframes praise-animation {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+            60% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+        #praise-banner { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; z-index: 1000; border: 4px solid var(--primary-color); }
+        #praise-banner.show { display: block; animation: praise-animation 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .thumbs-up { font-size: 4rem; display: block; animation: thumbs-up-animation 0.5s ease-in-out; }
         .praise-text { margin-bottom: 20px; }
         .praise-title { font-size: 1.5rem; color: var(--primary-color); font-weight: bold; margin-bottom: 10px; }
         .praise-subtitle { font-size: 1.1rem; color: #555; }
         .praise-confirm-btn { background: var(--primary-color); color: white; border: none; padding: 10px 30px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 1.1rem; box-shadow: 0 4px 0 #4b3eb1; }
+        .praise-confirm-btn:active { box-shadow: 0 2px 0 #4b3eb1 !important; }
 
         /* 복습 모달 */
         #review-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; justify-content: center; align-items: center; }
@@ -189,14 +194,18 @@
         .sentence-list-item span:first-child { font-weight: bold; color: var(--primary-color); margin-right: 10px; }
         .close-list-btn { background: none; color: var(--text-sub); border: 1px solid var(--border-light); padding: 8px 15px; margin-top: 15px; align-self: center; border-radius: 10px; cursor: pointer; }
 
-        /* 관리자 모드 */
+        /* 관리자 모드 (개선됨) */
         #admin-btn { position: fixed; bottom: 10px; right: 10px; background: #333; color: white; font-size: 12px; padding: 5px 10px; border-radius: 5px; cursor: pointer; z-index: 1001; opacity: 0.7; }
         #admin-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 1002; display: none; }
         #admin-modal h3 { margin-top: 0; }
         .admin-row { margin: 10px 0; }
         #exp-input { width: 100px; margin-right: 10px; }
         #voice-select { width: 200px; }
-        .admin-actions { margin-top: 20px; }
+        .admin-actions { display: flex; justify-content: flex-end; align-items: center; margin-top: 20px; }
+        .admin-actions button { margin-left: 8px; padding: 5px 10px; border-radius: 5px; border: none; cursor: pointer;}
+        .admin-actions .save-btn { background-color: var(--primary-color); color: white;}
+        .admin-actions .close-btn { background-color: #ccc; }
+        .admin-actions .reset-btn { background-color: var(--danger-color); color: white; margin-left: auto; }
 
         /* 모바일 뷰 */
         body.mobile-view { height: auto; overflow-y: auto; }
@@ -213,7 +222,7 @@
         <div class="streak-zone" onclick="showStreakHistory()">
             <span id="streak-fire">🔥</span> 
             <span id="streak-count">0일째</span>
-            <button class="nav-btn record-btn">기록</button>
+            <button class="nav-btn record-btn">📝 기록</button>
         </div>
         <div class="level-zone">
             <div class="level-info">
@@ -323,9 +332,9 @@
         <select id="voice-select"></select>
     </div>
     <div class="admin-actions">
-        <button onclick="saveAdminData()">저장</button>
-        <button onclick="closeAdminModal()">닫기</button>
         <button class="reset-btn" onclick="resetData()">기록 지우기</button>
+        <button class="save-btn" onclick="saveAdminData()">저장</button>
+        <button class="close-btn" onclick="closeAdminModal()">닫기</button>
     </div>
 </div>
 
@@ -580,7 +589,7 @@
                 <span class="history-item-timestamp">[${timeStr}]</span>
                 <span class="history-item-text">${item.text}</span>
             </div>
-            <button class="del-btn" onclick="deleteHistoryItem(event, '${item.timestamp}')">X</button>
+            <button class="del-btn" onclick="deleteHistoryItem(event, '${item.timestamp}')">🗑️</button>
         `;
         return itemEl;
     }
@@ -819,6 +828,7 @@
 
     function closePraise() {
         document.getElementById('praise-banner').classList.remove('show');
+        document.getElementById('praise-banner').style.display = 'none';
     }
 
     function openAdminModal() {
