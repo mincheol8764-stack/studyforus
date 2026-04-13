@@ -146,14 +146,16 @@
         /* 하단 영역 */
         .history-box { background: white; padding: 15px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-y: auto; max-height: 25vh; }
 
-        /* 기록 영역 */
+        /* 기록 영역 (개선됨) */
         .history-box h3 { margin:0; position:sticky; top:0; background:white; padding: 0 0 8px 0; border-bottom:1px solid #eee; z-index: 10; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; flex-direction: row; }
         .history-box h3 div { display: flex; gap: 5px; }
         .review-btn { font-size: 12px; background: var(--primary-color); color: white; border: none; cursor: pointer; border-radius: 4px; padding: 3px 8px; }
-        .history-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
-        .history-item-main { flex-grow: 1; cursor: pointer; }
+        .history-item { display: flex; justify-content: space-between; padding: 8px 6px; border-bottom: 1px solid #eee; align-items: center; flex-direction: row; }
+        .history-item-main { flex-grow: 1; cursor: pointer; display: flex; align-items: center; }
         .history-item-timestamp { font-size:0.7rem; color:#999; margin-right: 8px; }
         .history-item-text { color:var(--primary-color); text-decoration: underline; }
+        .history-controls { display: flex; align-items: center; gap: 8px; }
+        .count-badge { background-color: var(--highlight); color: white; font-size: 0.7rem; font-weight: bold; padding: 2px 6px; border-radius: 8px; }
         .del-btn { background: none; border: none; color: var(--danger-color); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
         .del-btn:hover { background-color: #ffdddd; }
         
@@ -416,7 +418,7 @@
         { main: "I don't understand your saying.", mean: "당신의 말을 잘 이해하지 못하겠습니다.", q_en: "Do you know what I mean?", q_kr: "내 말 알겠니?", ex_en: "I don't understand this book.", ex_kr: "나는 이 책을 이해 못 하겠어.", tip: "'understand'는 '이해하다'라는 뜻이에요. 상대방의 말이 어려울 때 'I don't understand.'라고 솔직하게 말하는 것이 중요해요." },
         { main: "Can you help me?", mean: "도와주실 수 있으세요?", q_en: "Sure, what's wrong?", q_kr: "물론이죠, 무슨 일이에요?", ex_en: "Can you show me?", ex_kr: "나한테 보여줄 수 있니?", tip: "도움이 필요할 때 쓸 수 있는 가장 기본적이고 중요한 표현이에요. 도움이 필요할 땐 언제나 자신있게 말해보세요." },
         { main: "What’s up?", mean: "잘 지냈어? (안녕?)", q_en: "Hi! Not much.", q_kr: "안녕! 별일 없어.", ex_en: "What’s new?", ex_kr: "새로운 소식 있어?", tip: "'What’s up?'은 친구 사이에 '별일 없어?' 하고 가볍게 묻는 아주 흔한 인사예요. 'Nothing much.' (별일 없어) 라고 대답하는 것이 가장 자연스럽답니다!" },
-        { main: "Nothing much.", mean: "별거 없었어요.", q_en: "What’s up?", q_kr: "잘 지냈어?", ex_en: "Nothing special.", ex_kr: "특별한 일 없었어.", tip: "'What's up?'이라는 인사에 대한 가장 일반적인 대답이에요. '별일 없어'라는 뜻으로, 편하게 사용할 수 있어요." },
+        { main: "Nothing much.", mean: "별거 없었어요.", q_en: "What's up?", q_kr: "잘 지냈어?", ex_en: "Nothing special.", ex_kr: "특별한 일 없었어.", tip: "'What's up?'이라는 인사에 대한 가장 일반적인 대답이에요. '별일 없어'라는 뜻으로, 편하게 사용할 수 있어요." },
         { main: "Studying math right now.", mean: "당장 수학 공부를 합시다.", q_en: "What are we doing?", q_kr: "우리 뭐 하는 거야?", ex_en: "Studying English right now.", ex_kr: "지금 당장 영어 공부를 하자.", tip: "'right now'는 '바로 지금'이라는 뜻으로, 지금 즉시 무언가를 하자는 강한 느낌을 줘요." },
         { main: "Sounds boring.", mean: "지루해 보이네요.", q_en: "Do you want to study?", q_kr: "공부하고 싶어?", ex_en: "Sounds funny.", ex_kr: "웃기게 들리네 / 재미있겠다.", tip: "'Sounds...'는 '~하게 들린다'는 뜻으로, 어떤 제안이나 이야기에 대한 내 느낌을 표현할 때 써요. 'Sounds great!', 'Sounds fun!' 처럼 다양하게 활용해보세요." },
         { main: "Are you studying for your test?", mean: "시험 때문에 공부하는 거니?", q_en: "Yes, I am.", q_kr: "네, 맞아요.", ex_en: "Are you waiting for your friend?", ex_kr: "친구 기다리는 중이니?", tip: "'Are you ~ing?'는 상대방이 지금 무엇을 하고 있는지 물어보는 표현이에요. 'be verb'와 '-ing'를 함께 쓰는 것이 포인트예요!" },
@@ -589,7 +591,10 @@
                 <span class="history-item-timestamp">[${timeStr}]</span>
                 <span class="history-item-text">${item.text}</span>
             </div>
-            <button class="del-btn" onclick="deleteHistoryItem(event, '${item.timestamp}')">🗑️</button>
+            <div class="history-controls">
+                <span class="count-badge">${item.count}회</span>
+                <button class="del-btn" onclick="deleteHistoryItem(event, '${item.timestamp}')">🗑️</button>
+            </div>
         `;
         return itemEl;
     }
@@ -602,18 +607,31 @@
     }
 
     function addHistory(sentenceIndex) {
-        if (history.some(item => item.index === sentenceIndex)) return; 
+        const existingItemIndex = history.findIndex(item => item.index === sentenceIndex);
 
-        const newItem = {
-            index: sentenceIndex,
-            text: sentences[sentenceIndex].main,
-            timestamp: new Date().toISOString()
-        };
+        if (existingItemIndex > -1) {
+            // 이미 기록이 있는 경우
+            const existingItem = history[existingItemIndex];
+            existingItem.count = (existingItem.count || 1) + 1; // 학습 횟수 1 증가
+            existingItem.timestamp = new Date().toISOString(); // 날짜 최신화
+            // 해당 아이템을 배열에서 제거했다가 맨 앞에 다시 추가하여 순서 변경
+            history.splice(existingItemIndex, 1);
+            history.unshift(existingItem);
+        } else {
+            // 새로운 기록인 경우
+            const newItem = {
+                index: sentenceIndex,
+                text: sentences[sentenceIndex].main,
+                timestamp: new Date().toISOString(),
+                count: 1 // 첫 학습이므로 1로 설정
+            };
+            history.unshift(newItem); 
+        }
 
-        history.unshift(newItem); 
         localStorage.setItem('eng_history', JSON.stringify(history));
         renderHistory();
     }
+
 
     function completeLearning() {
         let completedToday = JSON.parse(localStorage.getItem('eng_completed_today') || "[]");
@@ -625,10 +643,9 @@
             localStorage.setItem('eng_last_learn_date', today);
         }
 
-        if (completedToday.includes(currentIndex)) {
-            alert("지호야, 이 문장은 오늘 이미 공부했어! 내일 또 만나자. 😊");
-            return;
-        }
+        const isAlreadyCompleted = completedToday.includes(currentIndex);
+
+        // 기존에는 오늘 완료했으면 무조건 막았지만, 이제는 기록 업데이트를 위해 계속 진행
 
         const currentLessonNumber = currentIndex + 1;
         let earnedPoints;
@@ -640,26 +657,33 @@
             earnedPoints = 1;
         }
 
-        exp += earnedPoints;
-        completedToday.push(currentIndex);
-        
-        localStorage.setItem('eng_completed_today', JSON.stringify(completedToday));
-        
-        const banner = document.getElementById('praise-banner');
-        const randomPraise = praises[Math.floor(Math.random() * praises.length)];
-        
-        banner.querySelector('.praise-text').innerHTML = `
-            <div class="praise-title">${randomPraise.en}</div>
-            <div class="praise-subtitle">${randomPraise.ko}</div>
-        `;
-        
-        banner.classList.add('show');
-        speakText(randomPraise.en);
+        // 오늘 처음 완료하는 경우에만 점수 획득
+        if (!isAlreadyCompleted) {
+            exp += earnedPoints;
+            completedToday.push(currentIndex);
+            localStorage.setItem('eng_completed_today', JSON.stringify(completedToday));
 
-        checkStreak();
+            const banner = document.getElementById('praise-banner');
+            const randomPraise = praises[Math.floor(Math.random() * praises.length)];
+            
+            banner.querySelector('.praise-text').innerHTML = `
+                <div class="praise-title">${randomPraise.en}</div>
+                <div class="praise-subtitle">${randomPraise.ko}</div>
+            `;
+            
+            banner.classList.add('show');
+            speakText(randomPraise.en);
+
+            checkStreak();
+        } else {
+             // 이미 완료한 경우, 간단한 알림만 표시
+            alert("지호야, 이 문장은 오늘 이미 공부했었네! 복습도 정말 중요해. 👍");
+        }
+
         updateProgress();
-        addHistory(currentIndex);
+        addHistory(currentIndex); // 점수와 상관없이 기록은 항상 업데이트
     }
+
     
     function startReview() {
         if (history.length === 0) {
